@@ -11,6 +11,32 @@
     @include fs--heading-1;
 }
 
+.c-archives__year-link {
+    color: inherit;
+    text-decoration: none;
+    
+    &:hover {
+        color: $c-accent__blue;
+    }
+}
+
+.c-archives__post-count {
+    color: #999;
+    font-size: 2rem;
+    margin-left: 1rem;
+}
+
+.c-archives__date {
+    color: #999;
+    min-width: 140px;
+    margin-right: 2rem;
+}
+
+.c-archives__title {
+    margin: 0;
+    flex: 1;
+}
+
 .c-archives__list {
     margin-bottom: 2.5rem;
     list-style: none;

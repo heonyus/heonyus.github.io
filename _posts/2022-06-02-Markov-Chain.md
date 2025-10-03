@@ -51,7 +51,7 @@ Markov는 먼저 200개의 sub-sequence에서 얻은 *모음* 개수(42, 46, 40,
 
 먼저 Markov는 자신이 수집한 200개의 모음 개수 데이터(42, 46, 40, ...)가 실제로 얼마나 흩어져 있는지 측정
 
-![표1](https://github.com/user-attachments/assets/27105d9a-fe32-4164-a8e8-07e1f542a6ab)
+<img alt="표1" src="https://github.com/user-attachments/assets/07af94a8-8a07-4433-8b33-3ee95de5f457?raw=1" referrerpolicy="no-referrer" loading="lazy" />
 
 ### 1. 평균 ($\mu$) 계산
 - 평균 계산($p$, $\mu$): 200개 숫자의 평균 (결과: 43.19) 

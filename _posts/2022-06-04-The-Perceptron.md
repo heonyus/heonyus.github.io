@@ -214,3 +214,4 @@ $$\vartheta_{new} = \vartheta_{old} + \lambda(\hat{y}_k - y_k)$$
 * **Result**: 퍼셉트론은 `(0, 1, 1)`이라는 가중치 값을 통해 **OR 논리 연산을 학습하는 데 성공했습니다.**
 
 ---
+[실험 코드](https://github.com/heonyus/ai-implementation/blob/main/The-Perceptron/perceptron.ipynb)

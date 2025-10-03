@@ -41,60 +41,65 @@
     margin-bottom: 5rem; // 50px
     @include fs--body;
     color: var(--text);
-    line-height: 1.8; // 행간 증가
+    line-height: 2.0; // 행간 더 증가
 
     > * {
-        margin-bottom: 2.4rem; // 18px -> 24px
+        margin-bottom: 3rem; // 24px -> 30px
     }
 
     h1 {
         @include fs--heading-1;
-        color: var(--link);
+        color: var(--link) !important;
         padding-bottom: 0.8rem;
-        border-bottom: 3px solid var(--link);
-        margin-top: 3rem;
-        margin-bottom: 2rem;
+        border-bottom: 3px solid var(--link) !important;
+        margin-top: 3.5rem !important;
+        margin-bottom: 2.5rem !important;
     }
 
     h2 {
         @include fs--heading-2;
-        color: var(--link);
+        color: var(--link) !important;
         padding-bottom: 0.6rem;
-        border-bottom: 2px solid var(--link);
-        margin-top: 2.5rem;
-        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--link) !important;
+        margin-top: 3rem !important;
+        margin-bottom: 2rem !important;
     }
 
     h3 {
         @include fs--heading-3;
-        color: var(--link);
+        color: var(--link) !important;
         padding-bottom: 0.4rem;
-        border-bottom: 1px solid var(--link);
-        margin-top: 2rem;
-        margin-bottom: 1.2rem;
+        border-bottom: 1px solid var(--link) !important;
+        margin-top: 2.5rem !important;
+        margin-bottom: 1.5rem !important;
     }
 
     h4 {
         @include fs--heading-4;
-        color: var(--link);
-        margin-top: 1.8rem;
-        margin-bottom: 1rem;
+        color: var(--link) !important;
+        margin-top: 2rem !important;
+        margin-bottom: 1.2rem !important;
     }
 
     h5 {
         @include fs--body;
-        color: var(--link);
+        color: var(--link) !important;
         font-weight: 600;
+        margin-top: 1.8rem !important;
     }
     
     p {
-        line-height: 1.9;
-        margin-bottom: 1.6rem;
+        line-height: 2.1;
+        margin-bottom: 2rem;
     }
     
     li {
-        line-height: 1.8;
-        margin-bottom: 0.8rem;
+        line-height: 2.0;
+        margin-bottom: 1rem;
+    }
+    
+    ul, ol {
+        margin-bottom: 2rem;
     }
 
     strong {

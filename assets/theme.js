@@ -17,8 +17,7 @@
   // 초기 적용
   applyTheme(currentTheme() || (prefersDark ? 'dark' : 'light'));
 
-  // 헤더에 토글 버튼 추가
-  let toggleBtn;
+  // 테마 토글 버튼 설정
   function iconEmoji(theme){
     if(theme === 'light') {
       return '☀️'; // 라이트 모드일 때 해
@@ -27,28 +26,25 @@
   }
 
   function updateIcon(theme){
-    if(!toggleBtn) return;
-    toggleBtn.textContent = iconEmoji(theme);
-    toggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-    toggleBtn.title = theme === 'dark' ? 'Light mode' : 'Dark mode';
+    const btn = document.getElementById('theme-btn');
+    if(!btn) return;
+    btn.textContent = iconEmoji(theme);
+    btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    btn.title = theme === 'dark' ? 'Light mode' : 'Dark mode';
   }
 
-  function injectToggle(){
-    const top = document.querySelector('.c-page__header .c-header__top');
-    if(!top) return;
-    toggleBtn = document.createElement('button');
-    toggleBtn.type = 'button';
-    toggleBtn.className = 'theme-toggle';
-    toggleBtn.addEventListener('click', function(){
+  function setupToggle(){
+    const btn = document.getElementById('theme-btn');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
       const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       applyTheme(next);
     });
-    top.appendChild(toggleBtn);
     updateIcon(document.documentElement.getAttribute('data-theme'));
   }
 
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', injectToggle);
-  else injectToggle();
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', setupToggle);
+  else setupToggle();
 })();
 
 

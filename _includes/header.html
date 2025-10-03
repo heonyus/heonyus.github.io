@@ -3,6 +3,7 @@
     <form class="c-search" action="{{ "/search/" | prepend: site.baseurl }}" method="get" role="search">
       <input type="search" name="q" id="site-search" placeholder="Search..." aria-label="Search">
     </form>
+    <button type="button" class="theme-toggle" id="theme-btn" aria-label="Toggle theme">☀️</button>
   </div>
   <h1><code>{{ site.title}}</code></h1>
   {% if page.title == 'Home' %}

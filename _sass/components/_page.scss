@@ -8,6 +8,7 @@
 
 .c-page__header {
     margin-bottom: 10rem; // 100px
+    position: relative;
 
     h1 {
         margin-bottom: 2.5rem; // 25px
@@ -19,25 +20,31 @@
         @include fs--meta;
     }
 
-    .c-header__row { }
+    .c-header__top {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
 
     .c-search {
         display: inline-flex;
-        flex: 0 0 320px;
-        max-width: 100%;
+        width: 280px;
     }
 
     .c-search input[type="search"] {
         width: 100%;
-        padding: 0.7rem 1rem;
+        padding: 0.6rem 1rem;
         border: 1px solid var(--border);
         border-radius: 6px;
         background: var(--bg);
         color: var(--text);
+        font-size: 1.4rem;
     }
 
     .theme-toggle {
-        margin-left: .5rem;
         width: 36px;
         height: 36px;
         border-radius: 6px;
@@ -49,11 +56,25 @@
         color: var(--text);
         cursor: pointer;
         transition: all .2s ease;
+        font-size: 20px;
+        padding: 0;
     }
 
     .theme-toggle:hover {
         border-color: $c-accent__blue;
         color: $c-accent__blue;
+    }
+
+    @media (max-width: 768px) {
+        .c-header__top {
+            position: static;
+            justify-content: flex-end;
+            margin-bottom: 2rem;
+        }
+        .c-search {
+            flex: 1;
+            max-width: 400px;
+        }
     }
 }
 

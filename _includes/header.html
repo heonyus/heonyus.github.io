@@ -1,15 +1,15 @@
 <header class="c-page__header">
+  <div class="c-header__top">
+    <form class="c-search" action="{{ "/search/" | prepend: site.baseurl }}" method="get" role="search">
+      <input type="search" name="q" id="site-search" placeholder="Search..." aria-label="Search">
+    </form>
+  </div>
   <h1><code>{{ site.title}}</code></h1>
   {% if page.title == 'Home' %}
   <h1>{{ site.description }}</h1>
   {% endif %}
-  <div class="c-header__row">
-    <p>
-      <a href="{{ "/" | prepend: site.baseurl }}">Home</a><span
-            class="u-separate"></span> <a href="{{ "/about/" | prepend: site.baseurl }}">About</a><span class="u-separate"></span><a href="{{ "/tags/" | prepend: site.baseurl }}">Tags</a>
-    </p>
-    <form class="c-search" action="{{ "/search/" | prepend: site.baseurl }}" method="get" role="search" style="margin-left:auto">
-      <input type="search" name="q" id="site-search" placeholder="Search..." aria-label="Search">
-    </form>
-  </div>
+  <p>
+    <a href="{{ "/" | prepend: site.baseurl }}">Home</a><span
+          class="u-separate"></span> <a href="{{ "/about/" | prepend: site.baseurl }}">About</a><span class="u-separate"></span><a href="{{ "/tags/" | prepend: site.baseurl }}">Tags</a>
+  </p>
 </header>

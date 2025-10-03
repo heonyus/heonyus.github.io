@@ -1,0 +1,29 @@
+---
+layout: content
+permalink: /tags/:tag/
+---
+
+{% assign tag_key = page.url | split: '/tags/' | last | split: '/' | first %}
+{% assign tag_name = tag_key | replace: '-', ' ' %}
+
+<h2>#{{ tag_name }}</h2>
+
+<div class="c-archives">
+  <div class="c-archives__list">
+    {% assign posts = site.tags[tag_name] %}
+    {% if posts and posts != empty %}
+      {% for post in posts %}
+        <a href="{{ post.url | prepend: site.baseurl }}" class="c-archives__item">
+          <time class="c-archives__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+          <h3 class="c-archives__title">{{ post.title }}</h3>
+        </a>
+      {% endfor %}
+    {% else %}
+      <p>이 태그에 해당하는 글이 없습니다.</p>
+    {% endif %}
+  </div>
+</div>
+
+<p><a href="{{ "/tags/" | prepend: site.baseurl }}">← 모든 태그 보기</a></p>
+
+

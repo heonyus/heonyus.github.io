@@ -23,3 +23,26 @@ hr, .pagenav, .wrapper, .c-archives__item, .c-toc__nav {
     border-color: var(--border);
 }
 
+/* Dark mode text improvements */
+[data-theme='dark'] {
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--text);
+  }
+  
+  .c-archives__title,
+  .c-archives__date,
+  .c-tag a,
+  .c-page__header h1,
+  .c-page__header p a {
+    color: var(--text);
+  }
+  
+  .c-archives__date {
+    color: var(--muted);
+  }
+  
+  .c-tag a:hover {
+    color: var(--link);
+  }
+}
+

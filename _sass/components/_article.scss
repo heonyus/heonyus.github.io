@@ -107,8 +107,8 @@
   display: flex;
   justify-content: space-between;
   gap: 2rem;
-  border-top: 2px solid #e8e8e8;
-  border-bottom: 2px solid #e8e8e8;
+  border-top: 2px solid var(--border);
+  border-bottom: 2px solid var(--border);
   padding: 2rem 0;
   margin: 4rem 0;
   font-size: 1.6rem;
@@ -122,35 +122,35 @@
 .wrapper {
   flex: 1;
   padding: 1.5rem;
-  border: 1px solid #e8e8e8;
+  border: 1px solid var(--pagenav-border);
   border-radius: 8px;
-  background: #f9f9f9;
+  background: var(--pagenav-bg);
   transition: all 0.3s ease;
   
   &:hover {
-    background: #fff;
-    border-color: $c-accent__blue;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--pagenav-hover-bg);
+    border-color: var(--link);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
   }
   
   small {
-    color: #999;
+    color: var(--pagenav-muted);
     font-size: 1.3rem;
   }
   
   b {
-    color: #333;
+    color: var(--pagenav-text);
   }
   
   a {
-    color: #333;
+    color: var(--pagenav-text);
     text-decoration: none;
     display: block;
     margin-top: 0.5rem;
     font-weight: 500;
     
     &:hover {
-      color: $c-accent__blue;
+      color: var(--link);
     }
   }
 }

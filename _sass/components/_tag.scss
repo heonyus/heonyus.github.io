@@ -14,18 +14,19 @@
 }
 
 .c-tag {
-  background: #eee;
-  border-radius: 3px 0 0 3px;
-  color: #999;
+  background: var(--tag-bg);
+  border: 1px solid var(--tag-border);
+  border-radius: 9999px;
+  color: var(--tag-text);
   display: inline-block;
-  height: 26px;
+  height: 28px;
   line-height: 26px;
-  padding: 0 20px 0 23px;
+  padding: 0 14px 0 28px;
   position: relative;
   margin: 0 10px 50px 0;
   text-decoration: none;
-  -webkit-transition: color 0.2s;
-  
+  transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+
   a {
     color: inherit;
     text-decoration: none;
@@ -34,36 +35,28 @@
 }
 
 .c-tag::before {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: inset 0 1px rgba(0, 0, 0, 0.25);
+  background: var(--tag-dot-bg);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--tag-border);
   content: '';
-  height: 6px;
+  height: 8px;
   left: 10px;
   position: absolute;
-  width: 6px;
-  top: 10px;
+  width: 8px;
+  top: 9px;
 }
 
 .c-tag::after {
-  background: #fff;
-  border-bottom: 13px solid transparent;
-  border-left: 10px solid #eee;
-  border-top: 13px solid transparent;
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 0;
+  display: none;
 }
 
 .c-tag:hover {
-  background-color: $c-accent__blue;
-  color: white;
+  background-color: var(--tag-hover-bg);
+  color: var(--tag-hover-text);
+  border-color: var(--tag-hover-text);
 }
 
-.c-tag:hover::after {
-   border-left-color: $c-accent__blue;
-}
+.c-tag:hover::after { display: none; }
 
 .c-c-tag {
     margin-right: 1rem;

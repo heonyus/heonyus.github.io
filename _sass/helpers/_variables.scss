@@ -28,6 +28,13 @@ $m-border: 1px solid $c-base__2;
   --muted: #5c6e74;
   --border: #e8e8e8;
   --link: #0067FB;
+  /* Tag tokens (light) */
+  --tag-bg: #eef6ff;
+  --tag-text: #0b66c3;
+  --tag-border: #c7dbff;
+  --tag-hover-bg: #dbe9ff;
+  --tag-hover-text: #0043a7;
+  --tag-dot-bg: #ffffff;
 }
 
 :root[data-theme='dark'] {
@@ -36,4 +43,11 @@ $m-border: 1px solid $c-base__2;
   --muted: #c9d1d9;
   --border: #2d3640;
   --link: #58a6ff;
+  /* Tag tokens (dark) */
+  --tag-bg: rgba(56, 139, 253, 0.15);
+  --tag-text: #79c0ff;
+  --tag-border: rgba(56, 139, 253, 0.35);
+  --tag-hover-bg: rgba(56, 139, 253, 0.25);
+  --tag-hover-text: #9ecbff;
+  --tag-dot-bg: #0f1418;
 }

@@ -4,13 +4,15 @@
 
 .c-tags {
   list-style: none;
-  margin: 0;
-  overflow: hidden; 
+  margin: 0 0 2rem 0;
   padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .c-tags li {
-  float: left; 
+  display: inline-block;
 }
 
 .c-tag {
@@ -18,19 +20,23 @@
   border: 1px solid var(--tag-border);
   border-radius: 9999px;
   color: var(--tag-text);
-  display: inline-block;
-  height: 28px;
-  line-height: 26px;
-  padding: 0 14px 0 28px;
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+  min-height: 28px;
+  line-height: 1.4;
+  padding: 6px 16px 6px 30px;
   position: relative;
-  margin: 0 10px 50px 0;
+  margin: 0;
   text-decoration: none;
+  white-space: nowrap;
   transition: background-color 0.2s, color 0.2s, border-color 0.2s;
 
   a {
     color: inherit;
     text-decoration: none;
-    display: block;
+    display: inline-block;
+    white-space: nowrap;
   }
 }
 
@@ -43,7 +49,8 @@
   left: 10px;
   position: absolute;
   width: 8px;
-  top: 9px;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .c-tag::after {

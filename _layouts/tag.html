@@ -1,16 +1,12 @@
 ---
 layout: content
-permalink: /tags/:tag/
 ---
 
-{% assign tag_key = page.url | split: '/tags/' | last | split: '/' | first %}
-{% assign tag_name = tag_key | url_decode %}
-
-<h2>#{{ tag_name }}</h2>
+<h2>#{{ page.tag }}</h2>
 
 <div class="c-archives">
   <div class="c-archives__list">
-    {% assign posts = site.tags[tag_name] %}
+    {% assign posts = site.tags[page.tag] %}
     {% if posts and posts != empty %}
       {% for post in posts %}
         <a href="{{ post.url | prepend: site.baseurl }}" class="c-archives__item">
@@ -25,5 +21,3 @@ permalink: /tags/:tag/
 </div>
 
 <p><a href="{{ "/tags/" | prepend: site.baseurl }}">← 모든 태그 보기</a></p>
-
-

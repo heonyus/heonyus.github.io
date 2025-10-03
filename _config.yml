@@ -19,8 +19,24 @@ include: [_pages]
 markdown: kramdown
 permalink: /:year/:month/:title.html
 
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  syntax_highlighter_opts:
+    block:
+      line_numbers: false
+
 sass:
+    sass_dir: _sass
     style: compressed
 
-exclude: [vendor]
+exclude: 
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - Gemfile
+  - Gemfile.lock
+  - Rakefile
+  - README.md
 

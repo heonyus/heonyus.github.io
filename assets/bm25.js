@@ -68,8 +68,13 @@
       scored.forEach(d=> results.appendChild(formatResult(d)));
     }
 
+    // 쿼리 파라미터에서 q를 읽어 초기 검색
+    const params = new URLSearchParams(window.location.search);
+    const initial = params.get('q');
+    if(initial){ input.value = initial; }
     input.addEventListener('input', run);
     input.focus();
+    run();
   }
 
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', main);

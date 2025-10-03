@@ -4,7 +4,7 @@ permalink: /tags/:tag/
 ---
 
 {% assign tag_key = page.url | split: '/tags/' | last | split: '/' | first %}
-{% assign tag_name = tag_key | replace: '-', ' ' %}
+{% assign tag_name = tag_key | url_decode %}
 
 <h2>#{{ tag_name }}</h2>
 

@@ -3,7 +3,7 @@
    ========================================================================== */
 
 .u-container {
-    max-width: 72rem; // 620px
+    max-width: 110rem; // widen container
     margin-right: auto;
     margin-left: auto;
     padding-top: 10rem; // 100px
@@ -21,5 +21,34 @@ a { color: var(--link); }
 
 hr, .pagenav, .wrapper, .c-archives__item, .c-toc__nav {
     border-color: var(--border);
+}
+
+/* Header bar responsive layout */
+.c-page__header .c-header__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.c-page__header .c-header__row p {
+    flex: 1 1 auto;
+}
+
+.c-page__header .c-search {
+    margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .c-page__header .c-header__row {
+    flex-wrap: wrap;
+  }
+  .c-page__header .c-search {
+    order: 2;
+    width: 100%;
+  }
+  .c-page__header .theme-toggle {
+    order: 3;
+  }
 }
 

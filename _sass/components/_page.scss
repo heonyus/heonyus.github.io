@@ -19,12 +19,7 @@
         @include fs--meta;
     }
 
-    .c-header__row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 1.5rem;
-    }
+    .c-header__row { }
 
     .c-search {
         display: inline-flex;
@@ -39,6 +34,26 @@
         border-radius: 6px;
         background: var(--bg);
         color: var(--text);
+    }
+
+    .theme-toggle {
+        margin-left: .5rem;
+        width: 36px;
+        height: 36px;
+        border-radius: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--border);
+        background: var(--bg);
+        color: var(--text);
+        cursor: pointer;
+        transition: all .2s ease;
+    }
+
+    .theme-toggle:hover {
+        border-color: $c-accent__blue;
+        color: $c-accent__blue;
     }
 }
 

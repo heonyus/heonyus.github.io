@@ -10,7 +10,7 @@ layout: page
     <!-- Post Tags -->
     <ul class="c-tags">
       {% for tag in page.tags %}
-      <li class="c-tag"><a href="{{ "/tags/" | prepend: site.baseurl }}{{ tag | slugify }}/">{{ tag }}</a></li>
+      <li class="c-tag"><a href="{{ "/tags/" | prepend: site.baseurl }}{{ tag | url_encode }}/">{{ tag }}</a></li>
       {% endfor %}
     </ul>
     <div class="c-article__main">

@@ -1,4 +1,4 @@
-# Heonyu's Blog
+# Jaeh's Blog
 
 [paper-jekyll-theme](https://github.com/mkchoi212/paper-jekyll-theme)을 사용한 개인 블로그입니다.
 
@@ -35,4 +35,4 @@ git commit -m "Initial commit"
 git push origin main
 ```
 
-몇 분 후 `https://heonyus.github.io`에서 블로그를 확인할 수 있습니다.
+몇 분 후 `https://Jaehs.github.io`에서 블로그를 확인할 수 있습니다.

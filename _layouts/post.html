@@ -1,20 +1,21 @@
 ---
 layout: page
 ---
-<article class="c-article">
-  <header class="c-article__header">
-    <h1 class="c-article__title">{{ page.title }}</h1>
-    <p class="c-article__time"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time></p>
-  </header>
-  <!-- Post Tags -->
-  <ul class="c-tags">
-    {% for tag in page.tags %}
-    <li class="c-tag"><a href="{{ "/tags/#" | prepend: site.baseurl }}{{ tag | slugify }}">{{ tag }}</a></li>
-    {% endfor %}
-  </ul>
-  <div class="c-article__main">
-    {{ content }}
-  </div>
+<div class="c-article-wrapper">
+  <article class="c-article">
+    <header class="c-article__header">
+      <h1 class="c-article__title">{{ page.title }}</h1>
+      <p class="c-article__time"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time></p>
+    </header>
+    <!-- Post Tags -->
+    <ul class="c-tags">
+      {% for tag in page.tags %}
+      <li class="c-tag"><a href="{{ "/tags/#" | prepend: site.baseurl }}{{ tag | slugify }}">{{ tag }}</a></li>
+      {% endfor %}
+    </ul>
+    <div class="c-article__main">
+      {{ content }}
+    </div>
   <!-- Previous / Next Buttons -->
   <div class="pagenav">
     {% if page.previous.url %}
@@ -32,11 +33,22 @@ layout: page
     </div>
     {% endif %}
   </div>
-  <!-- Disqus comments view -->
-  {% if page.comments != false and site.disqus_id %}
-  <div class="post-disqus">
-    <section id="disqus_thread"></section>
-    {% include disqus.html %}
-  </div>
-  {% endif %}
-</article>
+    <!-- Disqus comments view -->
+    {% if page.comments != false and site.disqus_id %}
+    <div class="post-disqus">
+      <section id="disqus_thread"></section>
+      {% include disqus.html %}
+    </div>
+    {% endif %}
+  </article>
+  
+  <!-- Table of Contents -->
+  <aside class="c-toc">
+    <nav class="c-toc__nav">
+      <h3 class="c-toc__title">목차</h3>
+      <ul class="c-toc__list" id="toc"></ul>
+    </nav>
+  </aside>
+</div>
+
+<script src="{{ "/assets/toc.js" | prepend: site.baseurl }}"></script>

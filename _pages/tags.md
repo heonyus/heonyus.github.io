@@ -7,19 +7,22 @@ permalink: /tags/
 <h2>All Tags</h2>
 
 <ul class="c-tags">
-  {% assign tag_names = site.tags | map: 0 | sort_natural %}
-  {% for tag_name in tag_names %}
-    {% assign slug = tag_name | slugify %}
-    <li class="c-tag"><a href="{{ "/tags/#tag-" | prepend: site.baseurl }}{{ slug }}">#{{ tag_name }} ({{ site.tags[tag_name].size }})</a></li>
+  {% assign all_tags = site.tags | sort %}
+  {% for tag in all_tags %}
+    {% assign tag_name = tag[0] %}
+    {% assign posts = tag[1] %}
+    <li class="c-tag"><a href="{{ "/tags/#tag-" | prepend: site.baseurl }}{{ tag_name | slugify }}">#{{ tag_name }} ({{ posts | size }})</a></li>
   {% endfor %}
-  {% if tag_names == empty %}
+  {% if all_tags == empty %}
     <p>아직 태그가 없습니다.</p>
   {% endif %}
 </ul>
 
 <div class="c-archives">
-{% for tag_name in site.tags | map: 0 | sort_natural %}
-  {% assign posts = site.tags[tag_name] %}
+{% assign all_tags = site.tags | sort %}
+{% for tag in all_tags %}
+  {% assign tag_name = tag[0] %}
+  {% assign posts = tag[1] %}
   {% assign slug = tag_name | slugify %}
   <h2 id="tag-{{ slug }}" class="c-archives__year">
     <a href="#tag-{{ slug }}" class="c-archives__year-link">#{{ tag_name }}</a>

@@ -11,3 +11,15 @@
     padding-left: 1rem; // 10px
 }
 
+/* Global theme application */
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+a { color: var(--link); }
+
+hr, .pagenav, .wrapper, .c-archives__item, .c-toc__nav {
+    border-color: var(--border);
+}
+

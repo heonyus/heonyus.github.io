@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "An Example of Statistical Investigation of the Text Eugene Onegin Concerning the Connection of Samples in Chains(1913)"
-date: 2022-06-01
+date: 2022-06-02
 tags: [paper, markov]
 ---
 
@@ -172,3 +172,6 @@ Markov는 여기서 한 걸음 더 나아가 모델의 정확도를 극한으로
 * **복합 연쇄 모델 예측값**: **0.195**
 
 Markov는 이 두 숫자가 거의 일치하는 것을 보며 이것이 단순한 우연이 아니라 자신의 '연쇄(Chain)' 모델이 언어와 같은 현실 데이터의 복잡한 종속 구조를 수학적으로 완벽에 가깝게 설명해 낸다는 증거라고 결론
+
+---
+[실험 코드](https://github.com/heonyus/ai-implementation/blob/main/Markov-Chain/markov-chain.ipynb)

@@ -21,24 +21,53 @@ pre, code {
     @include fs--code;
 }
 
+code {
+    background: #f6f8fa;
+    border-radius: 3px;
+    padding: 0.2em 0.4em;
+    font-size: 85%;
+}
+
+pre {
+    background: #f6f8fa;
+    border-radius: 6px;
+    padding: 16px;
+    overflow: auto;
+    line-height: 1.45;
+    
+    code {
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+    }
+}
+
 .highlight {
-    border-radius: 4px;
-    background: #FDFDFD;
-    border: 1px solid #E8E8EB;
-    color: #93a1a1;
+    border-radius: 6px;
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    color: #24292f;
+    margin: 1em 0;
+
+    pre {
+        margin: 0;
+        background: transparent;
+        border: none;
+    }
 
     .gutter {
         padding: 1.2rem;
-        border-right: 1px solid #E8E8EB;
+        border-right: 1px solid #d0d7de;
     }
 
     .code {
         padding: 1.2rem;
     }
 }
+
 span.lineno {
     padding: 1rem;
-    border-right: 1px solid #E8E8EB;
+    border-right: 1px solid #d0d7de;
 }
 .highlight .c { color: #586e75 } /* Comment */
 .highlight .err { color: #93a1a1 } /* Error */

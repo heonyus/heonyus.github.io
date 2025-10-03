@@ -21,8 +21,12 @@ permalink: /:year/:month/:title.html
 
 kramdown:
   input: GFM
+  hard_wrap: false
+  parse_block_html: true
   syntax_highlighter: rouge
   syntax_highlighter_opts:
+    default_lang: text
+    css_class: 'highlight'
     block:
       line_numbers: false
 

@@ -10,7 +10,7 @@
   const content = document.querySelector('.c-article__main');
   if (!content) return;
 
-  const headings = content.querySelectorAll('h2, h3, h4');
+  const headings = content.querySelectorAll('h1, h2, h3, h4');
   
   // 헤딩이 없으면 TOC 숨기기
   if (headings.length === 0) {
@@ -34,7 +34,8 @@
     const id = heading.id;
     
     let levelClass = '';
-    if (level === 'h2') levelClass = 'c-toc__item--h2';
+    if (level === 'h1') levelClass = 'c-toc__item--h1';
+    else if (level === 'h2') levelClass = 'c-toc__item--h2';
     else if (level === 'h3') levelClass = 'c-toc__item--h3';
     else if (level === 'h4') levelClass = 'c-toc__item--h4';
     

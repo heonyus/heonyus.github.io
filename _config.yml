@@ -1,0 +1,26 @@
+# Site settings
+title: "Heonyu's Blog"
+description: > 
+  개인 블로그입니다.
+
+author: Heonyu
+email: your-email@example.com
+twitter_username: 
+github_username: heonyus
+
+baseurl: "" # the subpath of your site, e.g. /blog
+url: "https://heonyus.github.io" # the base hostname & protocol for your site
+
+google_analytics_id: 
+disqus_id:
+
+# Build settings
+include: [_pages]
+markdown: kramdown
+permalink: /:year/:month/:title.html
+
+sass:
+    style: compressed
+
+exclude: [vendor]
+

@@ -24,7 +24,7 @@ $m-border: 1px solid $c-base__2;
 /* Dark theme variables */
 :root[data-theme='light'] {
   --bg: #ffffff;
-  --text: #1a1a1a;
+  --text: #000000;
   --muted: #666666;
   --border: #e8e8e8;
   --link: #0067FB;
@@ -45,8 +45,8 @@ $m-border: 1px solid $c-base__2;
 
 :root[data-theme='dark'] {
   --bg: #0f1418;
-  --text: #f0f6fc;
-  --muted: #c9d1d9;
+  --text: #ffffff;
+  --muted: #8b949e;
   --border: #2d3640;
   --link: #58a6ff;
   /* Tag tokens (dark) */

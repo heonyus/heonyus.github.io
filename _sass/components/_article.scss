@@ -41,25 +41,60 @@
     margin-bottom: 5rem; // 50px
     @include fs--body;
     color: var(--text);
+    line-height: 1.8; // 행간 증가
 
     > * {
-        margin-bottom: 1.8rem; // 18px
+        margin-bottom: 2.4rem; // 18px -> 24px
+    }
+
+    h1 {
+        @include fs--heading-1;
+        color: var(--link);
+        padding-bottom: 0.8rem;
+        border-bottom: 3px solid var(--link);
+        margin-top: 3rem;
+        margin-bottom: 2rem;
     }
 
     h2 {
         @include fs--heading-2;
+        color: var(--link);
+        padding-bottom: 0.6rem;
+        border-bottom: 2px solid var(--link);
+        margin-top: 2.5rem;
+        margin-bottom: 1.5rem;
     }
 
     h3 {
         @include fs--heading-3;
+        color: var(--link);
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--link);
+        margin-top: 2rem;
+        margin-bottom: 1.2rem;
     }
 
     h4 {
         @include fs--heading-4;
+        color: var(--link);
+        margin-top: 1.8rem;
+        margin-bottom: 1rem;
     }
 
     h5 {
         @include fs--body;
+        color: var(--link);
+        font-weight: 600;
+    }
+    
+    p {
+        line-height: 1.9;
+        margin-bottom: 1.6rem;
+    }
+    
+    li {
+        line-height: 1.8;
+        margin-bottom: 0.8rem;
     }
 
     strong {

@@ -2,35 +2,46 @@
 
 [data-theme='dark'] {
   code {
-    background: #161b22;
-    color: #c9d1d9;
+    background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+    color: #ff7b72;
+    border: 1px solid #30363d;
+    font-weight: 500;
   }
   
   pre {
-    background: #0d1117;
+    background: linear-gradient(135deg, #0d1117 0%, #010409 100%);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+    border: 1px solid #30363d;
     
     code {
       background: transparent;
+      border: none;
+      color: inherit;
+      font-weight: normal;
     }
   }
   
   .highlight {
-    background: #161b22;
+    background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
     border: 1px solid #30363d;
     color: #c9d1d9;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
     
     pre {
-      background: #161b22;
+      background: transparent;
       color: #c9d1d9;
+      box-shadow: none;
+      border: none;
     }
     
     code {
-      background: #161b22;
+      background: transparent;
       color: #c9d1d9;
+      border: none;
     }
     
     .gutter {
-      background: #161b22;
+      background: rgba(22, 27, 34, 0.5);
       border-right: 1px solid #30363d;
     }
   }

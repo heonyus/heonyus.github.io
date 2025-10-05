@@ -18,32 +18,54 @@ tags: [Machine Learning, Ensemble Learning, Decision Tree, Statistics, Breiman]
 Bagging과 Boosting의 성공은 단일 결정 트리의 한계를 넘어서는 새로운 패러다임을 제시했다.  
 
 ### Background
+<br>
 
+#### Decision Tree
 - Decision Tree: 데이터를 여러 질문(조건문) 으로 나누어가며 최종적으로 예측값(class 또는 수치) 을 출력하는 트리 구조의 모델
 
-```예시
+```text
 [ROOT]
  ├── x1 < 0.5 ? 
  │     ├── Yes → Class A
  │     └── No  → Class B
-
 ```
+
+- 입력 특성(feature) 을 기준으로 데이터를 반복적으로 분할(split)하고 각 leaf 노드에서 최종 예측을 수행
+
+결정 트리는 훈련 데이터 $(x_i, y_i)$를 입력 공간의 여러 영역 $R_m$으로 분할하고, 각 영역마다 고정된 예측값 $c_m$을 할당하는 함수이다.
+
+$$
+\hat{f}(x) = \sum_{m=1}^M c_m \cdot I(x \in R_m)
+$$
+- $R_m$: m번째 분할 영역 (예: “$x_1 < 3.2$ 이고 $x_2 \geq 0.5$”)
+- $c_m$: 해당 영역의 평균 응답값(회귀) 또는 최빈 클래스(분류)
+- $I(\cdot)$: Indicator 함수 (조건이 참이면 1, 거짓이면 0)
+
+즉, 트리 구조는 여러 if–then–else 규칙들의 집합으로 볼 수 있다.
+
+#### Bagging & Boosting
 
 - **Bagging**: 데이터 샘플을 무작위로 뽑아 여러 트리를 학습 → 평균화 
 
+<div align="center">
+
 $$
-(regression)\hat{f}_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)
+\text{(regression)}\quad \hat{f}_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)
 $$
 
 $$
-(classification)\hat{f}_{\text{bag}}(x) = \mathrm{Mode}\left\{ \hat{f}_1(x), \ldots, \hat{f}_B(x) \right\}
+\text{(classification)}\quad \hat{f}_{\text{bag}}(x) = \mathrm{Mode}\left\{ \hat{f}_1(x), \ldots, \hat{f}_B(x) \right\}
 $$
-- **Boosting**: 이전 오차(분류가 틀린 샘플)에 더 많은 가중치를 두고, 여러 약한 분류기(트리)를 순차적으로 학습하여 성능을 점진적으로 개선하는 방법이다.
+
+</div>
+- **Boosting**: 이전 오차(분류가 틀린 샘플)에 더 많은 가중치를 두고, 여러 약한 분류기(트리)를 순차적으로 학습하여 성능을 점진적으로 개선하는 방법
 
   - 최종 예측 함수:  
+
     $$
     F_M(x) = \sum_{m=1}^M \alpha_m h_m(x)
     $$
+
     - $h_m(x)$: m번째 약한 분류기(예: 작은 결정트리)
     - $\alpha_m$: m번째 분류기의 가중치 (오분류율에 따라 조정)
     - $M$: 약한 분류기 개수
@@ -58,6 +80,7 @@ $$
     1. 이전 단계에서 잘못 분류된 샘플에 더 많은 가중치를 부여  
     2. 약한 분류기를 순차적으로 추가  
     3. 각 분류기의 성능에 따라 가중치를 조정하여 최종 예측을 만듦
+
 <p align="center">
   <img alt="Figure 1" src="https://i.imgur.com/hu06JLX.png" referrerpolicy="no-referrer" loading="lazy" />
 </p>
@@ -79,7 +102,7 @@ Breiman은 이 문제를 해결하기 위해 **Random Forest (RF)** 를 제안�
 ## Method
 <br>
 
-### Definition
+### 1️⃣ 정의 (Definition)
 
 랜덤 포레스트는 **서로 다른 랜덤 벡터 $\Theta_k$** 에 의해 생성된  
 트리 집합 $\{h(x, \Theta_k)\}$ 의 앙상블이다.

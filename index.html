@@ -1,32 +1,124 @@
 ---
-layout: page
+layout: home
 title: Home
 ---
-<section class="c-archives">
-  <link rel="shortcut icon" href="">
-  {% for post in site.posts  %}
-  {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-  {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
-  {% if forloop.first %}
-  <h2 class="c-archives__year" id="{{ this_year }}-ref">{{this_year}}</h2>
-  <ul class="c-archives__list">
-    {% endif %}
-    <li class="c-archives__item">
-      <h3>
-        <a href="{{ post.url | prepend: site.baseurl }}">{{post.title}}</a>
-        <br>
-        <small>{{post.description}}</small>
-      </h3>
-      <p>{{ post.date | date: "%b %-d, %Y" }}</p>
-    </li>
-    {% if forloop.last %}
-  </ul>
-  {% else %}
-  {% if this_year != next_year %}
-</ul>
-<h2 class="c-archives__year" id="{{ next_year }}-ref">{{next_year}}</h2>
-<ul class="c-archives__list">
-  {% endif %}
-  {% endif %}
-  {% endfor %}
+
+<!-- 🖍️ About Me -->
+<section class="profile-section">
+  <div class="section-header">
+    <span class="icon">🖍️</span>
+    <h2>About Me</h2>
+  </div>
+  <div class="section-content">
+    <ul>
+      <li>🧠 <strong>AI Researcher & MLOps Engineer</strong> at <a href="https://www.lngr.ai" target="_blank">Lingora AI Innovation Team</a></li>
+      <li>🎓 Industrial Management Engineering graduate from Myongji University <strong>(Summa Cum Laude)</strong></li>
+      <li>🔬 Former Undergraduate Researcher at <a href="https://cdslab.kr" target="_blank">Computational Data Science Lab</a>, Myongji University</li>
+      <li>☀️ Founder and President of Data Science Club 'FoM'</li>
+      <li>🎨 Ex-AI Researcher and Prompt Engineer at <a href="https://market.us" target="_blank">Market Designers</a></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 📚 About Me (Personal) -->
+<section class="profile-section">
+  <div class="section-header">
+    <span class="icon">📚</span>
+    <h2>About Me</h2>
+  </div>
+  <div class="section-content">
+    <ul>
+      <li>🎂 Born on January 19, 1999</li>
+      <li>📧 Email: <a href="mailto:heonyus@gmail.com">heonyus@gmail.com</a></li>
+      <li>🎖️ Military Service: 2020.04 - 2021.10 (Auxiliary Policeman, Seoul Metropolitan Police Agency, 3rd Mobile Unit)</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 🎓 Education -->
+<section class="profile-section">
+  <div class="section-header">
+    <span class="icon">🎓</span>
+    <h2>Education</h2>
+  </div>
+  <div class="section-content education-list">
+    <div class="education-item">
+      <div class="edu-date">2024.08</div>
+      <div class="edu-degree">MJU. Graduated <strong>Summa Cum Laude</strong> in Industrial Management Engineering</div>
+    </div>
+    <div class="education-item">
+      <div class="edu-date">2022.03</div>
+      <div class="edu-degree">MJU. Transferred to Industrial Management Engineering</div>
+    </div>
+    <div class="education-item">
+      <div class="edu-date">2019.02</div>
+      <div class="edu-degree">DIMA. Withdrew from Acting Major</div>
+    </div>
+    <div class="education-item">
+      <div class="edu-date">2018.03</div>
+      <div class="edu-degree">DIMA. Entered Acting Major</div>
+    </div>
+    <div class="education-item">
+      <div class="edu-date">2017.02</div>
+      <div class="edu-degree">Gwan-ak High School, Graduated</div>
+    </div>
+    <div class="education-item">
+      <div class="edu-date">2014.03</div>
+      <div class="edu-degree">Gwan-ak High School, Entered</div>
+    </div>
+  </div>
+</section>
+
+<!-- 💻 Tech Stack -->
+<section class="profile-section tech-stack">
+  <div class="section-header">
+    <span class="icon">💻</span>
+    <h2>Tech Stack</h2>
+  </div>
+  <div class="section-content">
+    <div class="tech-icons">
+      <div class="tech-icon" title="Python">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
+      </div>
+      <div class="tech-icon" title="PyTorch">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/pytorch/pytorch-original.svg" alt="PyTorch">
+      </div>
+      <div class="tech-icon" title="TensorFlow">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/tensorflow/tensorflow-original.svg" alt="TensorFlow">
+      </div>
+      <div class="tech-icon" title="AWS">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-original-wordmark.svg" alt="AWS">
+      </div>
+      <div class="tech-icon" title="Figma">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/figma/figma-original.svg" alt="Figma">
+      </div>
+      <div class="tech-icon" title="Google Cloud">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/googlecloud/googlecloud-original.svg" alt="Google Cloud">
+      </div>
+      <div class="tech-icon" title="Git">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git">
+      </div>
+      <div class="tech-icon" title="GitHub">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub">
+      </div>
+      <div class="tech-icon" title="HTML5">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5">
+      </div>
+      <div class="tech-icon" title="CSS3">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3">
+      </div>
+      <div class="tech-icon" title="Flutter">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg" alt="Flutter">
+      </div>
+      <div class="tech-icon" title="PostgreSQL">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/postgresql/postgresql-original.svg" alt="PostgreSQL">
+      </div>
+      <div class="tech-icon" title="JavaScript">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript">
+      </div>
+      <div class="tech-icon" title="TypeScript">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/typescript/typescript-original.svg" alt="TypeScript">
+      </div>
+    </div>
+  </div>
 </section>

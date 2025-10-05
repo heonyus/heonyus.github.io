@@ -4,9 +4,17 @@ description: >
   Artificial Übermensch
 
 author: Jaeh
-email: your-email@example.com
+email: heonyus@gmail.com
 twitter_username: 
 github_username: heonyus
+
+# Profile Information
+profile_image: /assets/images/profile.jpg
+location: Seoul, Republic of Korea
+linkedin: honey-jeong-560ab324
+instagram: ho.en.y
+followers: 19
+following: 19
 
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://heonyus.github.io" # the base hostname & protocol for your site

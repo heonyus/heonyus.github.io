@@ -263,8 +263,12 @@ Bootstrap으로 각 트리 학습시키면 트리 학습 시 사용되지 않은
 
 ### 5️⃣ Random Feature Selection
 
-각 노드에서 $M$개의 feature 중 무작위로 $F$개를 뽑아 split 후보로 사용한다.  
-이를 **Forest-RI (Random Input)** 라 한다.
+>랜덤 포레스트의 성능은 개별 트리의 강도(s) 는 높이고 트리들끼리의 상관(ρ) 은 낮추는 데서 나온다.
+
+- $mtry = F$(노드에서 보는 특성 개수)를 작게 하면 다양성이 $↑$, 너무 작으면 각 트리가 약해질 수 있음($s↓$)
+- 너무 크게 하면 각 트리는 강해지지만($s↑$) 서로 비슷해져 $ρ↑$ → 그래서 $U$자형 트레이드오프가 생김
+- 각 노드에서 $M$개의 feature 중 무작위로 $F$개를 뽑아 split 후보로 사용
+  - 이를 **Forest-RI (Random Input)** 라고 함
 
 $$
 F = 1 \text{ 또는 } F = \lfloor \log_2 M + 1 \rfloor
@@ -273,12 +277,19 @@ $$
 또 다른 변형인 **Forest-RC (Random Combination)** 은  
 랜덤 선형 결합으로 feature를 생성한다.
 
+- RI가 원래 특성에서만 축 정렬 분할을 찾는 반면, RC는 무작위 선형 결합으로 새로운 축을 만들어 그 축으로 분할
 $$
 z = \sum_{i=1}^{L} w_i x_i, \quad w_i \sim U[-1,1]
 $$
 
+- 노드마다 L개의 특성을 무작위로 선택하여, 각 특성에 대해 가중치 $w_i$를 $U[-1,1]$에서 샘플링해 선형 결합 $z = \sum_{i=1}^L w_i x_i$를 만듬
+- 이렇게 생성된 새로운 특성 $z$에 대해 한 번의 최적 분할(= 사선/경사 분할, oblique split)을 수행
+
 이 방식은 feature 수가 적은 문제에서 유효하며,  
 AdaBoost보다 **빠르고**, **노이즈에 강하며**, **병렬화가 쉬운** 장점을 가진다.
+
+> 즉, $mtry(F)$ 는 고정 공식보다 $OOB-error$ 로 선택하는 게 안전하다.<br>
+> 작은 $F$부터 크게 올려보며 $U$-자 에러 곡선의 바닥을 찾자.
 
 ## Experiment & Result
 
@@ -288,8 +299,6 @@ AdaBoost보다 **빠르고**, **노이즈에 강하며**, **병렬화가 쉬운*
 - **비교 대상:** AdaBoost (50 trees) vs Random Forest (100 trees)  
 - **지표:** Test Error, OOB Error  
 - **모델:** Forest-RI / Forest-RC / Adaboost
-
----
 
 ### 2️⃣ 주요 결과 요약
 
@@ -305,70 +314,141 @@ AdaBoost보다 **빠르고**, **노이즈에 강하며**, **병렬화가 쉬운*
 
 > 대부분의 데이터셋에서 Random Forest가 AdaBoost와 비슷하거나 더 낮은 오차율을 기록했다.
 
----
-
 ### 3️⃣ Strength–Correlation 관계 분석
 
-Breiman은 각 노드 분할에 사용할 feature 수 $F$를 1~50까지 변화시켜  
-strength, correlation, test error의 변화를 측정했다.
+본 논문에서는 각 노드 분할에 사용할 feature 수 $F$ 를 1~50까지 변화시켜 strength, correlation, test error의 변화를 측정했다.
 
-#### 📈 Figure 1. Sonar 데이터셋
+#### Figure 1. Sonar 데이터셋
 
-![figure1](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig1.png)
+<p align="center">
+  <img alt="Figure 1" src="https://i.imgur.com/94YSbJI.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
+> Sonar 데이터에선 mtry를 키울수록 트리들이 닮아가(ρ↑) 오차가 늘어난다. <br>
+> 따라서 작은 mtry가 더 유리하고, OOB가 그 추세를 잘 따라가며 약간 보수적으로 추정해준다는 걸 보여주는 그림이다
 
 - $F > 4$ 이후 strength는 거의 일정  
 - correlation은 증가  
 - test error는 U-자 형태로 증가 → 최적 $F$는 4~8
 
-#### 📉 Figure 2. Breast Cancer 데이터셋
+#### Figure 2. Breast Cancer 데이터셋
 
-![figure2](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig2.png)
+<p align="center">
+  <img alt="Figure 2" src="https://i.imgur.com/FONjjQd.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
+> 이 데이터에서는 트리 강도는 이미 높아 포화 mtry를 키우면 상관만 조금씩 올라서 오차가 살짝 악화된다. <br>
+> 따라서 작은 mtry가 유리하고, OOB가 신뢰할 만한 대리 지표라는 걸 보여주는 그림이다다
 
 - correlation은 완만히 증가  
 - strength는 거의 일정  
 - 최소 error는 $F=1$ 근처에서 발생
 
-#### 🌍 Figure 3. Satellite 데이터셋
+#### Figure 3. Satellite 데이터셋
 
-![figure3](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig3.png)
+<p align="center">
+  <img alt="Figure 3" src="https://i.imgur.com/WfRCWl8.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
+> 큰/복잡 데이터에선 mtry를 조금 키우면 $s↑$ 가 $ρ↑$ 보다 이득이라 오차가 약간 좋아지고 곧 평탄해진다.
 
 - 대규모 데이터에서는 strength가 지속적으로 증가  
 - correlation은 빠르게 포화  
 - 결과적으로 error는 미세하게 감소
 
-> **결론:** 작은 데이터셋은 “낮은 F → 저상관”, 큰 데이터셋은 “높은 F → 높은 strength”가 유리하다.
+> **결론:** 작은 데이터셋은 “낮은 $F$ → low correlation, 큰 데이터셋은 “높은 $F$ → 높은 strength”가 유리하다.
 
----
 
 ### 4️⃣ Noise Robustness 실험
 
-5%의 라벨 노이즈를 추가했을 때, Adaboost는 성능이 급격히 저하된 반면  
-Random Forest는 거의 영향을 받지 않았다.
+5%의 라벨 노이즈를 추가했을 때, Adaboost는 성능이 급격히 저하된 반면 Random Forest는 거의 영향을 받지 않았다.
 
-| Dataset | AdaBoost ΔError | Random Forest ΔError |
+| Dataset | AdaBoost $ΔError$ | Random Forest $ΔError$ |
 |:--|--:|--:|
 | Breast Cancer | +43.2% | +1.8% |
 | Ionosphere | +27.7% | +3.8% |
 | Votes | +48.9% | +6.3% |
 
----
+#### Why?
+- **AdaBoost (노이즈에 민감)**  
+  - 매 단계마다 오분류된 샘플의 가중치가 증가함  
+  - 수식:  
+
+    $$
+    w_i^{(t+1)} \propto w_i^{(t)} \cdot \exp\left(\alpha_t \cdot 1[y_i \ne h_t(x_i)]\right)
+    $$
+
+  - 잘못 표기된(노이즈) 샘플은 반복적으로 오분류되어 가중치가 계속 커짐(지수적으로)  
+  - 이후 약한 분류기들이 이 노이즈 샘플을 맞추려다 과적합 발생
+
+- **Random Forest (노이즈에 강건)**  
+  - 각 트리는 부트스트랩 샘플과 무작위 특성 선택으로 일부 데이터만 학습  
+  - 예측은 다수결/평균 방식으로, 노이즈의 영향이 여러 트리에 분산되어 상쇄  
+  - 개별 샘플에 가중치 집중이 없고, 트리 간 상관을 낮추는 랜덤성 덕분에 노이즈에 둔감
 
 ### 5️⃣ Variable Importance 시각화
 
-#### 🩸 Figure 4. Diabetes 데이터셋 (F=1)
-![figure4](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig4.png)
-- 변수 2, 6, 8번이 가장 중요하게 나타남
+#### Figure 4. Diabetes 데이터셋 (F=1)
 
-#### 🧬 Figure 6. Votes 데이터셋 (정당 분류)
-![figure6](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig6.png)
-- 변수 4번(핵심 이슈)의 중요도가 압도적  
-- 단일 변수만으로도 전체 모델 수준의 분류 정확도 달성
+<p align="center">
+  <img alt="Figure 4" src="https://i.imgur.com/PKustP3.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
 
----
+- x축 variable: 변수 인덱스(1~8)
+- y축 percent increase: Permutation Importance = “그 변수를 OOB에서 무작위 셔플했을 때 오류율이 몇 % 증가하나?”
+  - 변수 2, 6, 8번이 가장 중요하게 나타남
 
-## 📈 Regression Extension
+#### Figure 5. Diabetes 데이터셋 (F=2)
+<p align="center">
+  <img alt="Figure 4" src="https://i.imgur.com/Jf0F7U0.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
 
-Breiman은 RF를 회귀로 확장하며 다음 결과를 제시했다:
+Figure 4에서는 노드마다 단일 변수(F=1) 로 분할(= Forest-RI, 축정렬) → 변수 2가 압도적, 8·6이 그 다음으로 중요하다. <br>
+Figure 5에서는 같은 데이터에 대해 세 변수 조합(feature를 3개 선형결합) 을 쓰는 Forest-RC 스타일로 바꿔서, F=2(노드마다 두 개 조합만 후보)로 다시 측정한 그래프다.<br>
+
+> 핵심은 변수별 중요도의 상대적 크기 순서가 거의 유지된다는 것.
+
+#### Figure 6. Votes 데이터셋 (정당 분류)
+
+<p align="center">
+  <img alt="Figure 4" src="https://i.imgur.com/q9IxA91.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+Figure 6은 Votes 데이터(의회 표결 → 정당 분류)에서 Permutation Importance(OOB 기반)로 변수별 기여도를 측정한 결과다.
+
+- **x축**: 변수(의회 표결 이슈) 인덱스 1~16
+- **y축**: 해당 변수를 OOB에서 셔플했을 때 오류율이 몇 % 증가하는지 (= 중요도)
+  - 값이 클수록 "그 변수 없으면 성능이 크게 나빠진다 → 중요"를 의미
+
+**변수 4가 압도적 (약 300% 증가)**
+- 이 변수만 섞어도 OOB 오류가 수 배로 커진다는 뜻 → **정당 라벨을 거의 단독으로 구분하는 핵심 이슈**였다는 해석이 자연스럽다
+
+**나머지 변수들은 0% 근처의 낮은 중요도**
+- (1) 변수 4가 대부분의 구분을 이미 해버려 추가 정보가 중복이거나
+- (2) 개별로는 약한 신호라 단독 셔플 효과가 작음 → 약간의 음수/미세 양수는 OOB 표본 변동, 공선성, 경계 노이즈로 흔히 보이는 현상
+
+여기선 변수 4 하나가 매우 강력한 결정 변수라서, **이 변수만 사용해도 숲의 상당한 정확도에 근접**할 수 있음을 시사한다.<br>
+단, 정말 "동일한 수준"인지는 데이터·모델 설정에 따라 다를 수 있으니, 실무에선 해당 변수 단독 모델 vs RF를 실제로 비교해보는 게 안전하다.
+
+- 이 데이터(의회 표결)는 특정 핵심 의제 하나가 정당 구분과 강하게 상관되어 있을 수 있음
+- RF는 다수결이므로 강력한 변수를 가진 트리들이 반복해서 같은 결정을 내림
+- → 그 변수를 깨뜨리면 숲 전체가 흔들림 → 큰 중요도로 반영
+
+단일 변수 스파이크가 나오면 반드시 확인:
+
+1. **데이터 누출(leakage)** 은 아닌지
+2. **공정성/편향 이슈**는 없는지
+3. **그 변수를 빼고도 모델이 견고한지** (민감도 분석)
+
+> **보조 분석 방법**  <br>
+> 공선성이 많은 데이터에선 Permutation 중요도가 신호가 강한 변수 하나에 몰리거나 분산될 수 있다.  <br>
+> 필요하면 다음 방법들을 추가로 사용하자: <br>
+> - Conditional permutation <br>
+> - SHAP/TreeSHAP <br>
+> - 그룹 단위 셔플 (이슈 묶음) <br>
+
+## Regression Extension
+
+본 논문은 RF를 회귀로 확장하며 다음 결과를 제시했다:
 
 $$
 PE^*_{forest} \le \rho \, PE^*_{tree}
@@ -383,8 +463,6 @@ $$
 | Ozone | 17.8 | **16.3** |
 | Friedman #1 | 6.3 | **5.7** |
 | Abalone | 4.9 | **4.6** |
-
----
 
 ## 🧠 Discussion & Conclusion
 

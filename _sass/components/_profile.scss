@@ -1,0 +1,296 @@
+.profile-page {
+  min-height: 100vh;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  padding: 2rem 1rem;
+}
+
+.profile-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 2rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// Sidebar Profile Card
+.profile-sidebar {
+  .profile-card {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .profile-avatar {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 1px solid #30363d;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .profile-info {
+    margin-bottom: 1rem;
+
+    .profile-name {
+      font-size: 1.625rem;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+      color: #f0f6fc;
+    }
+
+    .profile-username {
+      font-size: 1.25rem;
+      font-weight: 300;
+      color: #8b949e;
+      margin: 0;
+    }
+  }
+
+  .profile-stats {
+    padding: 1rem 0;
+    border-bottom: 1px solid #21262d;
+    margin-bottom: 1rem;
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: #8b949e;
+
+      svg {
+        color: #8b949e;
+      }
+
+      strong {
+        color: #f0f6fc;
+      }
+    }
+  }
+
+  .profile-details {
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+      font-size: 0.875rem;
+      color: #c9d1d9;
+
+      svg {
+        color: #8b949e;
+        flex-shrink: 0;
+      }
+
+      a {
+        color: #58a6ff;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// Main Content Area
+.profile-content {
+  background-color: transparent;
+
+  .profile-header {
+    margin-bottom: 2rem;
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #7ee787;
+      margin-bottom: 1rem;
+    }
+  }
+}
+
+// About Section Styling
+.profile-section {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #21262d;
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #f0f6fc;
+      margin: 0;
+    }
+
+    .icon {
+      font-size: 1.25rem;
+    }
+  }
+
+  .section-content {
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      li {
+        padding: 0.5rem 0;
+        display: flex;
+        align-items: start;
+        gap: 0.5rem;
+        line-height: 1.6;
+
+        &::before {
+          content: "•";
+          color: #7ee787;
+          font-weight: bold;
+          font-size: 1.2rem;
+          margin-top: -0.1rem;
+        }
+
+        a {
+          color: #58a6ff;
+          text-decoration: none;
+
+          &:hover {
+            text-decoration: underline;
+          }
+        }
+
+        strong {
+          color: #f0f6fc;
+        }
+      }
+    }
+  }
+}
+
+// Tech Stack Icons
+.tech-stack {
+  .tech-icons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+
+    .tech-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+
+      img {
+        width: 32px;
+        height: 32px;
+        object-fit: contain;
+      }
+
+      &:hover {
+        transform: translateY(-2px);
+        border-color: #58a6ff;
+        box-shadow: 0 4px 8px rgba(88, 166, 255, 0.2);
+      }
+    }
+  }
+}
+
+// Education Timeline
+.education-list {
+  .education-item {
+    padding: 1rem 0;
+    border-left: 2px solid #30363d;
+    padding-left: 1.5rem;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: 1.25rem;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #58a6ff;
+      border: 2px solid #0d1117;
+    }
+
+    .edu-date {
+      font-size: 0.875rem;
+      color: #8b949e;
+      margin-bottom: 0.25rem;
+    }
+
+    .edu-degree {
+      font-weight: 600;
+      color: #f0f6fc;
+      margin-bottom: 0.25rem;
+    }
+
+    .edu-institution {
+      color: #c9d1d9;
+    }
+  }
+}
+
+// Achievements Section
+.achievements {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #21262d;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #f0f6fc;
+    margin-bottom: 1rem;
+  }
+
+  .achievement-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+    gap: 0.75rem;
+
+    .achievement-badge {
+      aspect-ratio: 1;
+      background-color: #0d1117;
+      border: 1px solid #30363d;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+}

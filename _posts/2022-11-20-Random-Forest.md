@@ -1,266 +1,309 @@
 ---
 layout: post
-title: "Long Short-Term Memory(1997)"
-date: 2022-07-21
-tags: [NLP, Recurrent Neural Network, Representation Learning, Cognitive Science]
+title: "Random Forests (2001)"
+date: 2022-11-20
+tags: [Machine Learning, Ensemble Learning, Decision Tree, Statistics, Breiman]
 ---
-# [논문리뷰] Long Short-Term Memory
 
-> Neural Computation 1997. [Paper](https://www.bioinf.jku.at/publications/older/2604.pdf)<br>
-> Sepp Hochreiter, Jürgen Schmidhuber<br>
-> Fakultät für Informatik, Technische Universität München | IDSIA<br>
-> 1997-11-15 (Journal Publication)<br>
+# [논문리뷰] Random Forests (2001)
+
+> Machine Learning, 45(1), 5–32. [PDF](https://www.stat.berkeley.edu/~breiman/randomforest2001.pdf)  
+> Leo Breiman, University of California, Berkeley  
+> Published: January 2001
+
 
 ## Introduction
-[RNN](https://heonyus.github.io/2022/07/RNN(1990).html)은 이전 시점($t-1$)의 정보를 현재($t$)의 정보를 결정에 활용하기 위해 내부 state를 가지는 모델이다.<br>
 
-하지만 input과 output 사이의 시간 간격(time lag)이 길어질 수록 역전파되는 error가 지수적으로 감소하거나 폭주하는 **장기 의존성 문제(Long-Term Dependency Problem)** 가 발생한다.<br>
+1990년대 후반은 **앙상블 학습(ensemble learning)** 의 시대였다.<br>
+Bagging과 Boosting의 성공은 단일 결정 트리의 한계를 넘어서는 새로운 패러다임을 제시했다.  
 
-이로 인해 기울기 소실(Vanishing Gradient) 또는 기울기 폭주(Exploding Gradient) 문제가 발생해 긴 sequence에 대한 학습이 어렵게 된다.<br>
-<br>
+### Background
 
-본 논문은 이러한 한계를 극복하기 위해 **LSTM** 알고리즘을 제안한다.<br>
-<br>
-LSTM의 핵심 아이디어는 '**상수 오차 회전목마(Constant Error Carousel, CEC)**'라는 선형 유닛을 통해 error가 소실되거나 폭주하지 않게 강제한다.<br>
-여기에 input 및 output gate라는 곱셈 unit을 추가, 메모리 저장, 보호, 읽어오는 시점을 네트워크 스스로 학습하게 한다.
+- Decision Tree: 데이터를 여러 질문(조건문) 으로 나누어가며 최종적으로 예측값(class 또는 수치) 을 출력하는 트리 구조의 모델
+
+```예시
+[ROOT]
+ ├── x1 < 0.5 ? 
+ │     ├── Yes → Class A
+ │     └── No  → Class B
+
+```
+
+- **Bagging**: 데이터 샘플을 무작위로 뽑아 여러 트리를 학습 → 평균화 
+
+$$
+(regression)\hat{f}_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)
+$$
+
+$$
+(classification)\hat{f}_{\text{bag}}(x) = \mathrm{Mode}\left\{ \hat{f}_1(x), \ldots, \hat{f}_B(x) \right\}
+$$
+- **Boosting**: 이전 오차(분류가 틀린 샘플)에 더 많은 가중치를 두고, 여러 약한 분류기(트리)를 순차적으로 학습하여 성능을 점진적으로 개선하는 방법이다.
+
+  - 최종 예측 함수:  
+    $$
+    F_M(x) = \sum_{m=1}^M \alpha_m h_m(x)
+    $$
+    - $h_m(x)$: m번째 약한 분류기(예: 작은 결정트리)
+    - $\alpha_m$: m번째 분류기의 가중치 (오분류율에 따라 조정)
+    - $M$: 약한 분류기 개수
+
+  - 가중치 계산(Adaboost 기준):  
+    $$
+    \alpha_m = \frac{1}{2} \ln\left(\frac{1-\epsilon_m}{\epsilon_m}\right)
+    $$
+    - $\epsilon_m$: m번째 분류기의 오분류율
+
+  - 요약:  
+    1. 이전 단계에서 잘못 분류된 샘플에 더 많은 가중치를 부여  
+    2. 약한 분류기를 순차적으로 추가  
+    3. 각 분류기의 성능에 따라 가중치를 조정하여 최종 예측을 만듦
+<p align="center">
+  <img alt="Figure 1" src="https://i.imgur.com/hu06JLX.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
+하지만 두 방법 모두 한계가 있었다.
+
+
+| 문제점 | 설명 |
+|--------|------|
+| Bagging | 트리 간 **상관관계(correlation)** 가 높아 오차 감소가 제한적 |
+| Boosting | **노이즈와 이상치(outlier)** 에 민감, 오버피팅 가능 |
+
+Breiman은 이 문제를 해결하기 위해 **Random Forest (RF)** 를 제안했다.  
+핵심은 **트리 생성 과정에 ‘무작위성(randomness)’을 주입하여 상관을 줄이고, 평균화로 강건성을 확보**하는 것이다.
+
+> “Random forests are a combination of tree predictors,  
+> each constructed using a random vector sampled independently.” — *Breiman (2001)*
 
 ## Method
 <br>
 
-### Vanishing/Exploding Gradient 문제의 수학적 분석
+### Definition
 
-RNN에서 error signal은은 역전파시 지수적으로 기울기가 곱해진다.<br>
-Backpropagation(BPTT) 알고리즘의 반복적인 곱셈 부분 때문에 장기 의존성 학습이 실패한다.<br>
-
-1. BPTT 과정시, error signal은 output unit에서부터 계산돼 과거로 전파됨<br>
-시간($t$)에 서 output unit($k$)의  error signal($ϑk(t)$)은 실제 정답과 모델 예측값의 차이에 활성화 함수의 미분값을 곱하여 계산됨
+랜덤 포레스트는 **서로 다른 랜덤 벡터 $\Theta_k$** 에 의해 생성된  
+트리 집합 $\{h(x, \Theta_k)\}$ 의 앙상블이다.
 
 $$
-\vartheta_k(t) = f_k'\left(\text{net}_k(t)\right) \left( d_k(t) - y_k(t) \right)
+H(x) = \text{majority\_vote}\{h(x, \Theta_1), h(x, \Theta_2), \dots, h(x, \Theta_K)\}
 $$
 
-2. 이 $\vartheta_k(t)$는 한 스텝 이전의 **은닉 유닛(hidden unit)** 으로 전파됨<br>
-시간($t$)의 hidden unit($j$)의 error signal($ϑj(t)$)은, 다음 시간($t+1$)으로부터 연결된 모든 error signal을 가중합해 계산하고 계속해서 반복
+각 트리는 **훈련 샘플 부트스트래핑 + 무작위 feature 선택**으로 학습된다.  
+트리 수가 충분히 많으면, 예측 확률이 안정화되어 오버피팅이 발생하지 않는다.
+
+---
+
+### 2️⃣ 일반화 오차 수렴 (Convergence)
+
+랜덤 포레스트의 일반화 오차는 다음과 같다:
 
 $$
-\vartheta_j(t) = f_j'\left(\text{net}_j(t)\right) \sum_i w_{ij} \vartheta_i(t+1)
+PE^* = P_{X,Y}\big(P_\Theta(h(X,\Theta)=Y) - \max_{j \neq Y} P_\Theta(h(X,\Theta)=j) < 0 \big)
 $$
 
-3. 이러한 한 스텝 전파 과정을 $q$번 반복하면 시간 $t$의 오차가 $q$ 스텝 전의 유닛에 미치는 총 영향력은 모든 가능한 경로에 대한 긴 곱셈의 합으로 나타남<br>
-이 반복적인 곱셈($Π$)이 문제의 핵심
+이는 **강한 대수의 법칙(Strong Law of Large Numbers)** 에 의해  
+트리 수 $K \to \infty$ 일 때 수렴한다.  
+즉, 트리를 무한히 추가해도 **overfitting이 일어나지 않는다.**
+
+---
+
+### 3️⃣ Strength–Correlation 이론
+
+Breiman은 RF의 정확도(Generalization Error)가  
+트리의 **강도(strength)** 와 **상관(correlation)** 의 함수임을 수학적으로 증명했다.
 
 $$
-\frac{\partial \vartheta_u(t)}{\partial \vartheta_v(t-q)} = 
-\sum_{l_1=1}^n \cdots \sum_{l_{q-1}=1}^n \prod_{m=1}^q f_{l_m}'\left(\text{net}_{l_m}(t-m)\right) w_{l_m l_{m-1}}
+PE^* \le \frac{\rho (1 - s^2)}{s^2}
 $$
 
+| 항목 | 의미 |
+|------|------|
+| $s$ | 각 트리의 평균적인 분류 정확도 (Strength) |
+| $\rho$ | 트리 간 예측 상관관계 (Correlation) |
 
-- 시나리오 1: 기울기 소실 (Vanishing Gradient)
-    - 조건: $|f' · w|$의 값이 지속적으로 1보다 작을 때 발생
-    - 과정: 1보다 작은 값을 계속해서 곱하면, 그 결과는 지수적으로 0에 수렴 (예: $0.8×0.8×0.8⋯≈0$)
-    - 결과: 먼 과거로부터 온 오차 신호가 현재에 도달했을 때 거의 0이 되어 사라짐, 장기적 패턴 파악 불가
-    - 본 논문에서는 activation function인 sigmoid 함수의 미분($f'$) 최대값이 $0.25$이기 때문에 error scaling factor인 $|f' · w|$가 1보다 커지려면 $%$|w|$%$는 반드시 $4$보다 커야하는데 보장못한다고 함
+즉,  
+- 트리의 **강도(s)** 는 높을수록 좋고,  
+- 트리 간 **상관(ρ)** 은 낮을수록 좋다.
 
-- 시나리오 2: 기울기 폭주 (Exploding Gradient)
-    - 조건: $|f' · w|$의 값이 지속적으로 1보다 클 때 발생
-    - 과정: 1보다 큰 값을 계속해서 곱하면, 그 결과는 지수적으로 무한대로 발산(예: $1.2×1.2×1.2⋯≈∞$)
-    - 오차 신호가 비정상적으로 커져 가중치 업데이트가 과격하게 발생
+> **Rule of Thumb**  
+> 낮은 ρ / 높은 s → 낮은 일반화 오차
 
-### 상수 오차 회전목마 (Constant Error Carousel, CEC)
+---
 
-본 논문에서 Vanishing Gradient 문제를 해결하기 위한 LSTM의 가장 근본적인 아이디어는 오차가 전파될때 곱해지는 값을 1로 만드는것이다.<br>
-자기 자신으로 순환하는 unit $j$에 대해, 다음 조건을 만족시키면 오차는 변질 되지 않고 그대로 흐른다고 주장한다.<br>
+### 4️⃣ Out-of-Bag (OOB) 추정
 
-$$
-f_j'\left(\text{net}_j(t)\right) w_{jj} = 1.0
-$$
+OOB는 RF의 핵심 내부 평가 메커니즘이다.  
+트리 학습 시 사용되지 않은 샘플(약 1/3)을 이용해  
+별도의 검증 없이 일반화 오차를 추정할 수 있다.
 
-- 활성화 함수를 항등 함수($f_j(x)=x$)로 사용하여 미분값 $f_j'$이 항상 1이 되게 함함
-- 자기 순환 가중치(Self-Recurrent Weight) $w_{jj}$를 1.0으로 고정
-- 이런 구조를 **상수 오차 회전목마(Constant Error Carousel, CEC)** 라고 함
-- CEC는 내부의 오차 신호를 아무런 감쇠 없이 과거로 전달하는 통로 역할
+- **OOB Error ≈ Test Error**
+- **OOB Strength, OOB Correlation** 도 내부적으로 계산 가능
 
-하지만 이 접근법은 아래 두 가지 가중치 충돌(Weight Conflict) 문제를 야기한다.<br>
+이로써 RF는 별도의 validation set 없이도 학습 중에 자기 평가(self-evaluation)가 가능하다.
 
-- 입력 가중치 충돌 (Input Weight Conflict): CEC에 연결된 입력 가중치는 특정 정보를 '저장'해야 하는 동시에, 다른 불필요한 정보가 들어와 기존 정보를 덮어쓰지 않도록 '보호'해야 함
-- 출력 가중치 충돌 (Output Weight Conflict): CEC에서 나가는 출력 가중치는 저장된 정보를 필요할 때 '읽어서' 다른 유닛에 전달해야 하는 동시에, 정보가 불필요할 때는 다른 유닛을 방해하지 않도록 출력을 '차단'해야 함
+---
 
-본 논문은 이러한 한계를 극복하기 위해 LSTM은 정보의 흐름을 제어하는 **게이트(Gate)** 를 도입하게 된다.<br>
+### 5️⃣ Random Feature Selection
 
-### LSTM 구조 설계 (Architecture)
-
-#### 메모리 셀과 CEC
-
-<p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/QtiBNvq.png" referrerpolicy="no-referrer" loading="lazy" />
-</p>
-
-LSTM의 기본 단위는 **메모리 셀(memory cell)** 이다.<br>
-이 셀의 핵심은 내부에 있는 **상수 오차 회전목마(Constant Error Carousel, CEC)** 로,
-자기 자신으로 순환하는 선형 경로를 통해 오차가 감쇠되지 않고 그대로 흐르게 한다.<br>
-CEC는 다음 조건을 만족한다.<br>
+각 노드에서 $M$개의 feature 중 무작위로 $F$개를 뽑아 split 후보로 사용한다.  
+이를 **Forest-RI (Random Input)** 라 한다.
 
 $$
-f_j'!\left(\text{net}*j(t)\right) \cdot w*{jj} = 1
+F = 1 \text{ 또는 } F = \lfloor \log_2 M + 1 \rfloor
 $$
 
-활성화 함수를 항등 함수($f(x)=x$)로 두고, 자기순환 가중치 $w_{jj}=1$로 고정하면
-이 경로를 따라 전파되는 오차의 배율은 항상 1이 되어 **기울기 소실/폭주가 발생하지 않는다**.
-
-
-#### 셀의 전진 패스 (Forward Pass)
-
-`Figure 1`의 구조를 수식으로 표현하면 다음과 같다.<br>
-($s_c(t)$는 CEC의 내부 상태, $y_c(t)$는 셀의 출력)
+또 다른 변형인 **Forest-RC (Random Combination)** 은  
+랜덤 선형 결합으로 feature를 생성한다.
 
 $$
-\begin{aligned}
-s_c(t) &= s_c(t-1) + y^{\text{in}}(t) \cdot g!\left(\text{net}_c(t)\right) \
-\end{aligned}
+z = \sum_{i=1}^{L} w_i x_i, \quad w_i \sim U[-1,1]
 $$
 
+이 방식은 feature 수가 적은 문제에서 유효하며,  
+AdaBoost보다 **빠르고**, **노이즈에 강하며**, **병렬화가 쉬운** 장점을 가진다.
+
+---
+
+## 📊 Experiment & Result
+
+### 1️⃣ 실험 구성
+
+- **데이터셋:** 13개 UCI + 3개 대규모 데이터 + 4개 Synthetic  
+- **비교 대상:** AdaBoost (50 trees) vs Random Forest (100 trees)  
+- **지표:** Test Error, OOB Error  
+- **모델:** Forest-RI / Forest-RC / Adaboost
+
+---
+
+### 2️⃣ 주요 결과 요약
+
+| Dataset | AdaBoost | Forest-RI | Forest-RC |
+|:--|:--:|:--:|:--:|
+| Breast Cancer | 3.2 | 2.9 | 3.1 |
+| Diabetes | 26.6 | 24.2 | 23.0 |
+| Sonar | 15.6 | 15.9 | 13.6 |
+| Vowel | 4.1 | 3.4 | 3.3 |
+| Image | 1.6 | 2.1 | 1.6 |
+| Letters | 3.4 | 3.5 | 3.4 |
+| Zip-code | 6.2 | 6.3 | 6.2 |
+
+> 대부분의 데이터셋에서 Random Forest가 AdaBoost와 비슷하거나 더 낮은 오차율을 기록했다.
+
+---
+
+### 3️⃣ Strength–Correlation 관계 분석
+
+Breiman은 각 노드 분할에 사용할 feature 수 $F$를 1~50까지 변화시켜  
+strength, correlation, test error의 변화를 측정했다.
+
+#### 📈 Figure 1. Sonar 데이터셋
+
+![figure1](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig1.png)
+
+- $F > 4$ 이후 strength는 거의 일정  
+- correlation은 증가  
+- test error는 U-자 형태로 증가 → 최적 $F$는 4~8
+
+#### 📉 Figure 2. Breast Cancer 데이터셋
+
+![figure2](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig2.png)
+
+- correlation은 완만히 증가  
+- strength는 거의 일정  
+- 최소 error는 $F=1$ 근처에서 발생
+
+#### 🌍 Figure 3. Satellite 데이터셋
+
+![figure3](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig3.png)
+
+- 대규모 데이터에서는 strength가 지속적으로 증가  
+- correlation은 빠르게 포화  
+- 결과적으로 error는 미세하게 감소
+
+> **결론:** 작은 데이터셋은 “낮은 F → 저상관”, 큰 데이터셋은 “높은 F → 높은 strength”가 유리하다.
+
+---
+
+### 4️⃣ Noise Robustness 실험
+
+5%의 라벨 노이즈를 추가했을 때, Adaboost는 성능이 급격히 저하된 반면  
+Random Forest는 거의 영향을 받지 않았다.
+
+| Dataset | AdaBoost ΔError | Random Forest ΔError |
+|:--|--:|--:|
+| Breast Cancer | +43.2% | +1.8% |
+| Ionosphere | +27.7% | +3.8% |
+| Votes | +48.9% | +6.3% |
+
+---
+
+### 5️⃣ Variable Importance 시각화
+
+#### 🩸 Figure 4. Diabetes 데이터셋 (F=1)
+![figure4](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig4.png)
+- 변수 2, 6, 8번이 가장 중요하게 나타남
+
+#### 🧬 Figure 6. Votes 데이터셋 (정당 분류)
+![figure6](https://raw.githubusercontent.com/jeheon-tech/blog-assets/main/randomforest2001_fig6.png)
+- 변수 4번(핵심 이슈)의 중요도가 압도적  
+- 단일 변수만으로도 전체 모델 수준의 분류 정확도 달성
+
+---
+
+## 📈 Regression Extension
+
+Breiman은 RF를 회귀로 확장하며 다음 결과를 제시했다:
+
 $$
-\begin{aligned}
-y_c(t) &= y^{\text{out}}(t) \cdot h!\left(s_c(t)\right)
-\end{aligned}
+PE^*_{forest} \le \rho \, PE^*_{tree}
 $$
 
-* $ s_c(t)$: 셀의 내부 상태 (기억 값, CEC에 저장)
-* $y^{\text{in}}(t)$: 입력 게이트 출력 (0~1)
-* $y^{\text{out}}(t)$: 출력 게이트 출력 (0~1)
-* $g(\cdot), h(\cdot)$: 입력/출력 변환용 비선형 함수 ($tanh$ 등)
+즉, **트리 간 잔차(residual) 상관이 낮을수록 오차가 작아진다.**  
+실험 결과, Bagging 대비 약 10~20%의 오차 감소를 보였다.
 
-즉, 새로운 입력 $g(\text{net}_c)$은 입력 게이트에 의해 조절되어 CEC에 추가되고,
-출력은 출력 게이트를 통과해야만 외부로 전달된다.<br>
-CEC 자체는 선형 통로이므로 오차가 그대로 보존된다.
+| Dataset | Bagging | Random Forest |
+|:--|:--:|:--:|
+| Boston Housing | 11.4 | **10.2** |
+| Ozone | 17.8 | **16.3** |
+| Friedman #1 | 6.3 | **5.7** |
+| Abalone | 4.9 | **4.6** |
 
+---
 
-#### 게이트의 정의
+## 🧠 Discussion & Conclusion
 
-각 게이트는 현재 입력과 이전 출력에 의해 결정된다.
+랜덤 포레스트는 단순한 트리 집합을 넘어  
+**Bias–Variance trade-off를 자동으로 최적화하는 구조**를 갖는다.
 
-$$
-\begin{aligned}
-y^{\text{in}}(t) &= f_{\text{in}}!\left(W_{x i} x_t + W_{y i} y_{t-1} + b_i\right) \
-\end{aligned}
-$$
+| 특성 | 설명 |
+|------|------|
+| 🎯 정확도 | AdaBoost와 유사하거나 더 높음 |
+| 🧱 견고성 | 노이즈, 이상치에 강함 |
+| ⚙️ 효율성 | 병렬화 및 대규모 데이터 처리에 적합 |
+| 🔍 해석성 | Feature Importance 및 OOB로 내부 검증 가능 |
 
-$$
-\begin{aligned}
-y^{\text{out}}(t) &= f_{\text{out}}!\left(W_{x o} x_t + W_{y o} y_{t-1} + b_o\right)
-\end{aligned}
-$$
+Breiman은 논문 말미에 다음과 같은 흥미로운 가설을 남겼다.
 
-여기서 $f_{\text{in}}, f_{\text{out}}$은 보통 시그모이드 함수로,
-각 게이트의 열림 정도를 0과 1 사이로 조정한다.<br>
-입력 게이트는 **언제 기억을 쓸지**, 출력 게이트는 **언제 읽을지**를 학습적으로 결정한다.
+> “In later stages, AdaBoost may be emulating a random forest.”  
+> — 즉, Adaboost는 본질적으로 랜덤 포레스트의 확률적 형태일 수 있다는 것이다.
 
+---
 
-#### 게이트의 역할 직관
+> “Randomness reduces correlation.  
+> Strength increases bias reduction.  
+> Together they make forests powerful.”  
+> — *Leo Breiman (2001)*
 
-* **입력 게이트**는 새로운 정보가 기존 기억을 덮어쓰지 않도록 제어한다.
-* **출력 게이트**는 불필요한 시점에는 셀 상태를 외부로 노출하지 않는다.
-  두 게이트 덕분에 CEC는 “**기억은 보존하면서도, 노이즈는 차단**”하는 구조가 된다.
+---
 
+## 🔗 References
 
-| 단계                    | 설명                                                                                                                                                              | 수식                                                                                      |
-| :-------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
-| **① CEC가 전달하는 이전 상태** | 바로 이전 시점에서 계산된 내부 상태가 **지연 1 step**으로 들어온다.<br>이는 별도의 “메모리 선(line)”을 통해 그대로 전달되며, 새로운 계산은 수행하지 않는다.<br>즉, CEC의 `(1.0)` 루프가 이미 $s_c(t-1)$을 현재 시점으로 “복사”해 온 상태이다. | $\text{(1-step delay)} \quad s_c(t-1) \longrightarrow s_c(t)$                           |
-| **② 후보 입력 계산**        | 현재 시점의 외부 입력 $x_t$ 와 이전 시점의 **출력 유닛들의 결과 $y_u(t-1)$** 이 가중합으로 섞인다.<br>이 합을 비선형 함수 $g(\cdot)$ 에 통과시켜 “추가 후보 정보(candidate)”를 만든다.                                 | $\text{net}*c(t) = \sum_u w*{c,u} , y_u(t-1)$<br>$g_t = g!\left(\text{net}_c(t)\right)$ |
-| **③ 입력 게이트 결정**       | 같은 입력과 이전 출력들을 이용해 **입력 게이트 유닛**도 계산된다.<br>이 값(0~1)이 “후보 정보를 얼마나 쓸까”를 조절한다.                                                                                     | $y^{in}(t) = f_{in}!\left(\sum_u w_{in,u},y_u(t-1)\right)$                              |
-| **④ 내부 상태 업데이트**      | 이전 상태와 새로운 후보를 합쳐 현재 상태를 만든다.<br>$s_c(t-1)$은 CEC로 들어오고, $y^{in}(t)\cdot g_t$는 새로 계산된 항목이다.<br>즉, **“과거 기억 + 현재 쓰기”** 두 신호가 합산되는 구조로, 병렬이 아닌 순차 업데이트이다.          | $s_c(t) = s_c(t-1) + y^{in}(t)\cdot g_t$                                                |
-| **⑤ 출력 게이트 계산**       | 출력 게이트 역시 현재 입력과 이전 출력을 기반으로 계산된다.                                                                                                                              | $y^{out}(t) = f_{out}!\left(\sum_u w_{out,u},y_u(t-1)\right)$                           |
-| **⑥ 최종 출력 산출**        | 내부 상태를 비선형 함수 $h(\cdot)$ (예: tanh)에 통과시킨 뒤, 출력 게이트로 스케일하여 최종 출력을 만든다.<br>이 $y^c(t)$가 다음 시점 $(t+1)$의 모든 유닛들에게 전달되는 “이전 출력”이 된다.                                  | $y^c(t) = y^{out}(t)\cdot h!\left(s_c(t)\right)$                                        |
+- Breiman, L. (2001). *Random Forests*. Machine Learning, 45(1), 5–32.  
+- Breiman, L. (1996). *Bagging Predictors*. Machine Learning, 26(2), 123–140.  
+- Freund, Y. & Schapire, R. (1996). *Experiments with a new boosting algorithm*.  
+- Dietterich, T. (1998). *An Experimental Comparison of Three Methods for Constructing Ensembles of Decision Trees*.  
+- Ho, T.K. (1998). *The Random Subspace Method for Constructing Decision Forests*. IEEE PAMI.
 
+---
 
-#### 셀 블록과 네트워크 구성 (Figure 2)
-
-<p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/AovN6wP.png" referrerpolicy="no-referrer" loading="lazy" />
-</p>
-
-여러 개의 셀을 묶어 하나의 **블록(block)** 으로 구성한다.<br>
-블록 내부의 셀들은 입력·출력 게이트를 공유하며 병렬적으로 작동한다.<Br>
-각 블록은 입력층과 출력층에 완전 연결되고, 은닉계층 전체는 이러한 블록들의 집합으로 구성된다.<br>
-
-LSTM 네트워크는 오류가
-
-* **CEC 내부**에서는 감쇠 없이 전달되고
-* **게이트 및 출력 경로**에서는 필요한 시점에만 전파되도록 설계되어 있다.
-
-이로써 RNN의 핵심 한계였던 **장기 의존성 학습 실패**가 근본적으로 해결된다.
-
-## Experiments
-<br>
-
-### Embedded Reber Grammar
-<br>
-이 실험은 문법적 장기 의존성(long-term dependencies)을 테스트하기 위한 패턴 학습 문제다.<br>
-일반 RNN이 잘 풀지 못하는 이유는 입력 초반부의 문자가 후반부의 올바른 출력을 결정해야해서 수십 step 이상 떨어진 관계를 기억해야하는 문제가 존재한다.<br>
-
-- 데이터 1 : Reber Grammar
-    - 규칙: 문장은 항상 B로 시작해 E로 끝나야 함.<br>
-    중간의 문자들은 정해진 전이 규칙(transition rule)에 따라 이어져야 함.
-
-<p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/pHwMrDj.png" referrerpolicy="no-referrer" loading="lazy" />
-</p>
-
-| From | 가능한 다음 문자  | 이동 경로                          |
-| ---- | ---------- | ------------------------------ |
-| B    | T, P       | 시작점                            |
-| T    | S, V       | T → S → X → S or T → V → P → V |
-| P    | X, T       | P → X → V → P or P → T → V → T |
-| S, V | X, P, T, V | 내부 루프                          |
-| E    | 종료         | 최종 노드                          |
-
-→ 이 그래프를 통해 모든 합법적 문자열을 생성할 수 있다. <br>
-예: B T S X S V P E , B P T V P X V P E 등
-
-- 데이터 2: Embedded Reber Grammar (ERG)
-    - 기본 Reber Grammar를 그대로 중첩시켜 더 긴 의존성을 만들어낸 형태
-    - 시작 문자는 항상 B로 시작하고, 다음 문자가 T 또는 P일 때 각각 다른 Reber Grammar로 분기
-    - 두 하위 Reber Grammar를 통과한 후 다시 T/P/E 패턴으로 끝남
-
-즉, 첫 문자(T or P)를 기억해 두었다가 수십 step 이후 문장의 끝에서 같은 문자(T or P)를 예측해야 한다.
-→ 이게 바로 장기 의존성(long-term dependency)
-
-
-<p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/BJaCL2n.png" referrerpolicy="no-referrer" loading="lazy" />
-</p>
-
-#### 학습 설정
-
-- 입력: 문자열의 각 문자를 원-핫 인코딩(One-hot encoding)
-- 출력: 다음에 올 문자 (예측 문제)
-- 학습 알고리즘: Backpropagation Through Time (BPTT)
-- 모델:
-    - LSTM: 2개의 메모리 셀 블록(각각 2개 셀 포함)
-- 비교군: Elman RNN, NARX Network, Recurrent Cascade-Correlation (RCC)
-- 손실 함수: Cross-Entropy
-
-#### 실험 결과
-
-<p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/8BYfCDQ.png" referrerpolicy="no-referrer" loading="lazy" />
-</p>
-
-Table 1은 “LSTM이 장기 의존 패턴 학습에 처음으로 실질적 성공을 보인 증거.”<br>
-다른 RNN들은 학습이 불안정하거나 느렸고, LSTM은 적은 데이터로도 100 % 수렴하며 오차 폭주/소실 없이 안정적이었다.<br>
-
-→ 즉, LSTM은 거의 항상 성공하며 수렴 속도 역시 압도적으로 빠르다.
-
-## Conclusion
-본 논문은 순환신경망(RNN)이 가진 장기 의존성(Long-Term Dependency) 문제 즉, 입력과 출력 사이의 시간 간격이 길어질수록 기울기가 소실되거나 폭주하는 한계를 해결하기 위해 Long Short-Term Memory (LSTM) 구조를 제안하였다.<br>
-LSTM은 내부에 상수 오차 회전목마(Constant Error Carousel, CEC) 라는 선형 유닛을 두어 시간이 흘러도 오차의 크기가 변하지 않게 만든다.<br>
-이를 통해 역전파 시 기울기의 크기가 항상 1로 유지되어, 오차가 장기간에 걸쳐 감쇠하지 않고 그대로 전달될 수 있다.<br>
-
-또한, 입력 게이트(Input Gate) 와 출력 게이트(Output Gate) 를 도입하여 어떤 시점에 정보를 저장·보호·읽을지를 스스로 학습하게 하였다.<br>
-이 두 게이트가 CEC의 입·출구를 제어함으로써 불필요한 정보가 덮어쓰이거나 필요 없는 시점에 읽히는 문제를 방지한다.<br>
-
-실험 결과, LSTM은 Embedded Reber Grammar 등 다양한 장기 의존 과제(Long Time Lag Task) 에서 기존 RNN 계열(RTRL, Elman, RCC 등)을 압도적으로 능가하였다. <br>
-특히, 훈련 안정성(98~100% 성공률) 과 학습 속도(최대 20배 이상 빠름) 에서 그 우수성이 명확히 입증되었다. <br>
-
-이 연구는 이후 수많은 변형 모델의 기반이 되었으며 Forget Gate(1999), Peephole Connection(2000), GRU(2014) 등의 확장으로 발전했다.<br>
-오늘날 Transformer가 등장하기 전까지 LSTM은 시계열·언어·음성·신호 처리 등 대부분의 시퀀스 문제의 표준 구조로 자리잡았다.
+#️⃣ #RandomForest #EnsembleLearning #MachineLearning #LeoBreiman #DecisionTree

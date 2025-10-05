@@ -135,6 +135,28 @@
     ul,
     ol {
         margin-left: 2.1rem;
+        
+        // 리스트 내 수식 스타일
+        li {
+            // MathJax 수식이 줄바꿈되지 않도록
+            .MJX-TEX {
+                word-break: normal;
+                overflow-wrap: normal;
+            }
+            
+            // 인라인 수식 정렬
+            .MathJax, .MathJax_Display {
+                display: inline !important;
+                margin: 0 !important;
+                vertical-align: middle;
+            }
+            
+            // 수식이 포함된 리스트 아이템의 여백 조정
+            &:has(.MathJax) {
+                overflow-x: auto;
+                word-wrap: break-word;
+            }
+        }
     }
 
     table {

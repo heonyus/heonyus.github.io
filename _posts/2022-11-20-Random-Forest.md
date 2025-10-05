@@ -227,7 +227,7 @@ def avg_pairwise_correlation_indicator(preds_2d, y_true):
 
 ---
 
-> mtry는 랜덤 포레스트(Random Forest) 모델에서 각 트리의 **노드가 분할(split)할 때 참고하는 “무작위 feature 개수”**를 뜻한다.
+> mtry는 랜덤 포레스트(Random Forest) 모델에서 각 트리의 **노드가 분할(split)할 때 참고하는 “무작위 feature 개수”** 를 뜻한다.
 
 <p align="center">
   <img alt="Figure 1" src="https://i.imgur.com/r0ErscE.png" referrerpolicy="no-referrer" loading="lazy" />
@@ -252,16 +252,14 @@ def avg_pairwise_correlation_indicator(preds_2d, y_true):
 
 ### 4️⃣ Out-of-Bag (OOB) 추정
 
-OOB는 RF의 핵심 내부 평가 메커니즘이다.  
-트리 학습 시 사용되지 않은 샘플(약 1/3)을 이용해  
-별도의 검증 없이 일반화 오차를 추정할 수 있다.
-
-- **OOB Error ≈ Test Error**
-- **OOB Strength, OOB Correlation** 도 내부적으로 계산 가능
+OOB는 RF의 핵심 내부 평가 메커니즘이다.<br>
+Bootstrap으로 각 트리 학습시키면 트리 학습 시 사용되지 않은 샘플(약 1/3)을 이용해 별도의 검증 없이 일반화 오차(PE)를 추정할 수 있다.<br>
+- 랜덤 포레스트의 각 트리는 훈련셋 크기 N과 같은 개수를 중복 허용(with replacement) 으로 뽑아 만든 부트스트랩 샘플로 학습
+- 이때 어떤 샘플 하나(예: i번째 샘플)가 단 한 번도 선택되지 않을 확률은은 약 36.8%
+  - **OOB Error ≈ Test Error**
+  - **OOB Strength, OOB Correlation** 도 내부적으로 계산 가능
 
 이로써 RF는 별도의 validation set 없이도 학습 중에 자기 평가(self-evaluation)가 가능하다.
-
----
 
 ### 5️⃣ Random Feature Selection
 
@@ -282,9 +280,7 @@ $$
 이 방식은 feature 수가 적은 문제에서 유효하며,  
 AdaBoost보다 **빠르고**, **노이즈에 강하며**, **병렬화가 쉬운** 장점을 가진다.
 
----
-
-## 📊 Experiment & Result
+## Experiment & Result
 
 ### 1️⃣ 실험 구성
 

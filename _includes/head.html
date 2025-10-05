@@ -15,14 +15,47 @@
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$'], ['\\[', '\\]']],
         processEscapes: true,
-        processEnvironments: true
+        processEnvironments: true,
+        tags: 'ams'
       },
       options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        ignoreHtmlClass: 'tex2jax_ignore',
+        processHtmlClass: 'tex2jax_process'
+      },
+      svg: {
+        fontCache: 'global'
+      },
+      chtml: {
+        scale: 1,
+        matchFontHeight: false
       }
     };
   </script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
+  
+  <!-- MathJax 렌더링 후 스타일 적용 -->
+  <style>
+    /* 리스트 내 수식 스타일 */
+    .c-article__main li .MathJax {
+      display: inline !important;
+      vertical-align: middle;
+      margin: 0 0.2em;
+    }
+    
+    .c-article__main li mjx-container {
+      display: inline-block !important;
+      margin: 0 0.2em;
+      vertical-align: middle;
+    }
+    
+    /* 긴 수식이 리스트를 벗어나지 않도록 */
+    .c-article__main li mjx-container[display="true"] {
+      overflow-x: auto;
+      overflow-y: hidden;
+      max-width: 100%;
+    }
+  </style>
   
   <!-- Mermaid for diagram support -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>

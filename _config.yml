@@ -24,6 +24,10 @@ kramdown:
   hard_wrap: false
   parse_block_html: true
   parse_span_html: true
+  math_engine: mathjax
+  math_engine_opts:
+    preview: true
+    preview_as_code: false
   syntax_highlighter: rouge
   syntax_highlighter_opts:
     default_lang: text

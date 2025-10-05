@@ -3,28 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TF-IDF Chart Test</title>
+    <title>TF-IDF Interactive Chart Test</title>
     <style>
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            max-width: 900px;
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            max-width: 1000px;
             margin: 0 auto;
-            padding: 20px;
-            background: #f5f5f5;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
         }
         .container {
             background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        h1 { color: #333; }
-        h2 { color: #666; margin-top: 30px; }
+        h1 { 
+            color: #1e3a8a; 
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        h2 { 
+            color: #475569; 
+            margin-top: 30px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #64748b;
+            font-size: 1.4em;
+            margin-top: 25px;
+        }
+        p {
+            line-height: 1.8;
+            color: #334155;
+        }
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        
+        /* Plotly 차트 스타일 */
+        #tfidf_plot { 
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin: 30px auto;
+        }
+        #tfidf_plot, #tfidf_plot > div { 
+            width: 100% !important; 
+            height: 500px !important; 
+        }
+        #tfidf_plot svg { 
+            display: block;
+            max-height: none !important; 
+            pointer-events: auto !important; 
+            overflow: visible !important;
+        }
+        #tfidf_plot:hover {
+            box-shadow: 0 6px 30px rgba(96, 165, 250, 0.15);
+            transition: box-shadow 0.3s ease;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Latent Dirichlet Allocation (2003)</h1>
+        <h1>📊 Latent Dirichlet Allocation (2003)</h1>
+        <span class="badge">Interactive Chart Test</span>
         
         <h2>Introduction</h2>
         <p>텍스트 코퍼스(corpus)를 확률적으로 모델링하려는 시도는 오래전부터 이어져 왔다.<br>
@@ -33,61 +87,197 @@
         <h2>Background</h2>
         <h3>1. TF-IDF : 문서를 단어의 빈도 벡터로 변환</h3>
         
-        <div id="tfidf_plot" style="width:100%; height:450px; margin: 20px auto;"></div>
-        
-        <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
-        <script>
-        (function() {
-          function createChart() {
-            const words = ["data","model","topic","bayes","graph","markov"];
-            const weights = [0.35,0.25,0.10,0.05,0.15,0.10];
-            
-            const plotDiv = document.getElementById('tfidf_plot');
-            if (!plotDiv) {
-              console.error('Plot div not found');
-              return;
-            }
-            
-            if (typeof Plotly === 'undefined') {
-              console.error('Plotly not loaded, retrying...');
-              setTimeout(createChart, 100);
-              return;
-            }
-            
-            console.log('Creating chart...');
-            Plotly.newPlot('tfidf_plot', [{
-              type: 'bar',
-              x: words,
-              y: weights,
-              marker: {
-                color: '#60a5fa',
-                line: { color: '#3b82f6', width: 1.5 }
-              },
-              hovertemplate: '<b>%{x}</b><br>Weight: %{y:.2f}<extra></extra>'
-            }], {
-              title: { text: 'TF-IDF Example (Doc1)', font: { size: 18 } },
-              xaxis: { title: 'Words', tickangle: -45 },
-              yaxis: { title: 'TF-IDF Weight', range: [0, 0.4] },
-              margin: { l: 60, r: 30, t: 60, b: 80 },
-              plot_bgcolor: 'rgba(0,0,0,0)',
-              paper_bgcolor: 'rgba(0,0,0,0)'
-            }, {
-              responsive: true,
-              displayModeBar: true,
-              displaylogo: false
-            });
-            console.log('Chart created successfully!');
-          }
-          
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', createChart);
-          } else {
-            createChart();
-          }
-        })();
-        </script>
+        <div id="tfidf_plot"></div>
         
         <p><strong>정의</strong>: 단어 t가 문서 d에서 얼마나 중요한지 측정하는 가중치.</p>
+        
+        <p style="margin-top: 30px; padding: 20px; background: #f1f5f9; border-radius: 8px; border-left: 4px solid #3b82f6;">
+            <strong>💡 인터랙션 가이드:</strong><br>
+            • 차트가 로드되면 막대가 아래에서 위로 올라가는 애니메이션을 볼 수 있습니다<br>
+            • 각 막대에 마우스를 올려보세요 - 상세 정보가 표시됩니다<br>
+            • hover 시 해당 막대가 강조되고 다른 막대는 흐려집니다
+        </p>
     </div>
+    
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+    <script>
+    (function() {
+      function createChart() {
+        const words = ["data", "model", "topic", "bayes", "graph", "markov"];
+        const weights = [0.35, 0.25, 0.10, 0.05, 0.15, 0.10];
+        
+        // 단어별 설명 추가
+        const descriptions = {
+          "data": "데이터셋에서 가장 중요한 키워드",
+          "model": "모델링 관련 핵심 용어",
+          "topic": "주제 모델링의 중심 개념",
+          "bayes": "베이즈 통계 관련 용어",
+          "graph": "그래프 구조 표현",
+          "markov": "마르코프 모델 참조"
+        };
+        
+        const plotDiv = document.getElementById('tfidf_plot');
+        if (!plotDiv) {
+          console.error('Plot div not found');
+          return;
+        }
+        
+        if (typeof Plotly === 'undefined') {
+          console.error('Plotly not loaded, retrying...');
+          setTimeout(createChart, 100);
+          return;
+        }
+        
+        console.log('Creating animated TF-IDF chart...');
+        
+        // 그라데이션 색상 배열
+        const colors = weights.map(w => `rgba(96, 165, 250, ${0.5 + w})`);
+        
+        const trace = {
+          type: 'bar',
+          x: words,
+          y: weights,
+          text: weights.map(w => w.toFixed(2)),
+          textposition: 'outside',
+          textfont: {
+            size: 14,
+            color: '#1e3a8a',
+            family: 'Roboto, sans-serif',
+            weight: 600
+          },
+          marker: {
+            color: colors,
+            line: { 
+              color: '#3b82f6', 
+              width: 2 
+            },
+            opacity: 0.85
+          },
+          hovertemplate: 
+            '<b style="font-size:16px">%{x}</b><br>' +
+            '<span style="color:#3b82f6">●</span> TF-IDF Weight: <b>%{y:.3f}</b><br>' +
+            '<span style="font-size:12px; color:#64748b">%{customdata}</span>' +
+            '<extra></extra>',
+          customdata: words.map(w => descriptions[w]),
+          hoverlabel: {
+            bgcolor: 'white',
+            bordercolor: '#3b82f6',
+            font: { 
+              size: 14, 
+              family: 'Roboto, sans-serif',
+              color: '#1e293b'
+            },
+            align: 'left'
+          }
+        };
+        
+        const layout = {
+          title: { 
+            text: '📊 TF-IDF Weight Distribution',
+            font: { 
+              size: 22,
+              color: '#1e3a8a',
+              family: 'Roboto, sans-serif',
+              weight: 700
+            },
+            x: 0.5,
+            xanchor: 'center'
+          },
+          xaxis: { 
+            title: {
+              text: 'Terms',
+              font: { size: 16, color: '#475569', weight: 600 }
+            },
+            tickfont: { size: 14, color: '#64748b' },
+            gridcolor: 'rgba(203, 213, 225, 0.3)',
+            showline: true,
+            linewidth: 2,
+            linecolor: '#cbd5e1'
+          },
+          yaxis: { 
+            title: {
+              text: 'TF-IDF Weight',
+              font: { size: 16, color: '#475569', weight: 600 }
+            },
+            tickfont: { size: 13, color: '#64748b' },
+            range: [0, 0.42],
+            gridcolor: 'rgba(203, 213, 225, 0.4)',
+            showline: true,
+            linewidth: 2,
+            linecolor: '#cbd5e1',
+            zeroline: true,
+            zerolinecolor: '#94a3b8',
+            zerolinewidth: 2
+          },
+          margin: { l: 70, r: 40, t: 80, b: 70 },
+          plot_bgcolor: 'rgba(248, 250, 252, 0.5)',
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          hovermode: 'closest',
+          font: { family: 'Roboto, sans-serif' },
+          showlegend: false
+        };
+        
+        const config = {
+          responsive: true,
+          displayModeBar: true,
+          displaylogo: false,
+          modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d', 'autoScale2d'],
+          toImageButtonOptions: {
+            format: 'png',
+            filename: 'tfidf_chart',
+            height: 600,
+            width: 900,
+            scale: 2
+          }
+        };
+        
+        // 차트 생성 (초기에는 y값이 0)
+        const initialTrace = {...trace, y: weights.map(() => 0)};
+        Plotly.newPlot(plotDiv, [initialTrace], layout, config).then(() => {
+          console.log('Chart created, starting animation...');
+          // 올라가는 애니메이션 효과
+          Plotly.animate(plotDiv, {
+            data: [{y: weights}],
+            traces: [0]
+          }, {
+            transition: {
+              duration: 1200,
+              easing: 'elastic-out'
+            },
+            frame: {
+              duration: 1200,
+              redraw: false
+            }
+          });
+        });
+        
+        // hover 시 막대 확대 효과
+        plotDiv.on('plotly_hover', function(data) {
+          const pointIndex = data.points[0].pointIndex;
+          const update = {
+            'marker.line.width': weights.map((_, i) => i === pointIndex ? 3 : 2),
+            'marker.opacity': weights.map((_, i) => i === pointIndex ? 1 : 0.7)
+          };
+          Plotly.restyle(plotDiv, update, [0]);
+        });
+        
+        plotDiv.on('plotly_unhover', function() {
+          const update = {
+            'marker.line.width': 2,
+            'marker.opacity': 0.85
+          };
+          Plotly.restyle(plotDiv, update, [0]);
+        });
+        
+        console.log('Chart setup complete!');
+      }
+      
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', createChart);
+      } else {
+        createChart();
+      }
+    })();
+    </script>
 </body>
 </html>

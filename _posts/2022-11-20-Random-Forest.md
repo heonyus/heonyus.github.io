@@ -18,8 +18,6 @@ tags: [Machine Learning, Ensemble Learning, Decision Tree, Statistics, Breiman]
 Bagging과 Boosting의 성공은 단일 결정 트리의 한계를 넘어서는 새로운 패러다임을 제시했다.  
 
 ### Background
-<br>
-
 #### Decision Tree
 - Decision Tree: 데이터를 여러 질문(조건문) 으로 나누어가며 최종적으로 예측값(class 또는 수치) 을 출력하는 트리 구조의 모델
 
@@ -100,8 +98,6 @@ Breiman은 이 문제를 해결하기 위해 **Random Forest (RF)** 를 제안�
 > each constructed using a random vector sampled independently.” — *Breiman (2001)*
 
 ## Method
-<br>
-
 ### 1️⃣ 정의 (Definition)
 
 랜덤 포레스트는 **서로 다른 랜덤 벡터 $\Theta_k$** 에 의해 생성된  

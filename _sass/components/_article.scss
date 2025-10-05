@@ -62,7 +62,7 @@
         color: var(--link) !important;
         padding-bottom: 0.6rem;
         border-bottom: 2px solid var(--link) !important;
-        display: inline-block; // underline only as wide as text
+        display: block; // 각 헤더가 별도 줄을 차지하도록 수정
         margin-top: 3rem !important;
         margin-bottom: 2.5rem !important;
     }
@@ -72,7 +72,7 @@
         color: var(--link) !important;
         padding-bottom: 0.4rem;
         border-bottom: 1px solid var(--link) !important;
-        display: inline-block; // underline only as wide as text
+        display: block; // 각 헤더가 별도 줄을 차지하도록 수정
         margin-top: 2.5rem !important;
         margin-bottom: 1.5rem !important;
     }

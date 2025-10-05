@@ -181,6 +181,9 @@ def majority_vote(preds_2d):
     return (votes_for_1 >= votes_for_0).astype(int)
 ```
 
+- 트리 투표 다수결(majority vote) 값을 구하는 함수
+- majority vote는 사실상 클래스 투표 수에서 argmax를 적용하는 것
+
 ```py
 def binary_margin_from_votes(preds_2d, y_true):
     n_trees = preds_2d.shape[0]
@@ -192,6 +195,11 @@ def binary_margin_from_votes(preds_2d, y_true):
     margin = p_correct - p_incorrect
     return margin
 ```
+- 각 샘플에 대해 정답(y_true)이 맞게 맞힌 트리 비율(p_correct)와 틀린 비율(p_incorrect)을 구함
+
+$$margin = p_{correct} - p_{incorrect}$$
+
+- "정답을 맞춘 비율이 틀린 비율보다 얼마나 더 많은지"를 측정하는 값 (음수면 majority가 오답)
 
 ```py
 def avg_pairwise_correlation_indicator(preds_2d, y_true):
@@ -211,8 +219,15 @@ def avg_pairwise_correlation_indicator(preds_2d, y_true):
         return 0.0
     return float(np.mean(corrs))
 ```
+- 트리별로 정답 예측 여부(맞음=1, 틀림=0)로 2차원 배열 Z를 만듦 (모양: (트리 수, 샘플 수))
+- 트리별로 "정답률 벡터 Z"의 평균을 빼고 정규화
+- 트리 쌍마다 Pearson 상관계수(표본 상관)를 계산해서, 그 값들의 평균을 반환
 
-mtry는 랜덤 포레스트(Random Forest) 모델에서 각 트리의 **노드가 분할(split)할 때 참고하는 “무작위 feature 개수”**를 뜻한다.
+→ 이 값이 낮을수록(0에 가까울수록) 트리들이 서로 다르게 실수(실패)하며, 앙상블 효과가 커진다.
+
+---
+
+> mtry는 랜덤 포레스트(Random Forest) 모델에서 각 트리의 **노드가 분할(split)할 때 참고하는 “무작위 feature 개수”**를 뜻한다.
 
 <p align="center">
   <img alt="Figure 1" src="https://i.imgur.com/r0ErscE.png" referrerpolicy="no-referrer" loading="lazy" />
@@ -226,11 +241,14 @@ mtry는 랜덤 포레스트(Random Forest) 모델에서 각 트리의 **노드�
 </p>
 
 - Test Error 는 중간 mtry에서 저점(논문과 유사한 “균형점”)
+- Test Error = $f(Strength, Correlation)$<br>
+           = `개별 트리 성능` vs `앙상블 다양성`의 트레이드오프
 
 <p align="center">
   <img alt="Figure 1" src="https://i.imgur.com/qJyuepg.png" referrerpolicy="no-referrer" loading="lazy" />
 </p>
 
+- $ρ / s²$ 는 작을수록 좋음 → 작은 mtry 영역이 유리한 경향
 
 ### 4️⃣ Out-of-Bag (OOB) 추정
 

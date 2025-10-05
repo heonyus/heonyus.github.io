@@ -6,10 +6,10 @@ description: >
 author: Jaeh
 email: your-email@example.com
 twitter_username: 
-github_username: Jaehs
+github_username: heonyus
 
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://Jaehs.github.io" # the base hostname & protocol for your site
+url: "https://heonyus.github.io" # the base hostname & protocol for your site
 
 google_analytics_id: 
 disqus_id:

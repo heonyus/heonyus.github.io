@@ -42,6 +42,8 @@ kramdown:
     css_class: 'highlight'
     block:
       line_numbers: false
+  smart_quotes: ["apos", "apos", "quot", "quot"]
+  typographic_symbols: { hellip: '...', mdash: '---', ndash: '--', laquo: '<<', raquo: '>>' }
 
 sass:
     sass_dir: _sass

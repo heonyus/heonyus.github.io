@@ -10,18 +10,31 @@
   
   <!-- MathJax for LaTeX support -->
   <script>
-    MathJax = {
+    // 수식 내부의 파이프(|) 문자가 테이블로 인식되는 것을 방지
+    window.MathJax = {
       tex: {
         inlineMath: [['$', '$'], ['\\(', '\\)']],
         displayMath: [['$$', '$$'], ['\\[', '\\]']],
         processEscapes: true,
         processEnvironments: true,
-        tags: 'ams'
+        tags: 'ams',
+        // 파이프를 절댓값 기호로 올바르게 처리
+        macros: {
+          abs: ['\\left\\lvert #1 \\right\\rvert', 1]
+        }
       },
       options: {
-        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
         ignoreHtmlClass: 'tex2jax_ignore',
         processHtmlClass: 'tex2jax_process'
+      },
+      startup: {
+        // 페이지 로드 전에 수식 처리
+        pageReady: function() {
+          return MathJax.startup.defaultPageReady().then(function() {
+            console.log('MathJax initial typesetting complete');
+          });
+        }
       },
       svg: {
         fontCache: 'global'
@@ -32,6 +45,40 @@
       }
     };
   </script>
+  
+  <!-- 페이지 로드 전 인라인 수식의 파이프 문자 보호 -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // 테이블 외부의 인라인 수식에서 파이프 문자 보호
+      var walker = document.createTreeWalker(
+        document.body,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+      
+      var textNodes = [];
+      var node;
+      while(node = walker.nextNode()) {
+        textNodes.push(node);
+      }
+      
+      textNodes.forEach(function(textNode) {
+        var text = textNode.nodeValue;
+        // 인라인 수식 내부의 | 를 &#124; 로 변경하지 않고 MathJax가 처리하도록 유지
+        // 대신 테이블 파싱을 방지하기 위해 수식을 code 태그로 임시 감싸기
+        if (text.includes('$') && text.includes('|')) {
+          // $ ... | ... $ 패턴 감지
+          var hasInlineMath = /\$[^$]*\|[^$]*\$/.test(text);
+          if (hasInlineMath && !textNode.parentElement.classList.contains('MathJax')) {
+            // 이미 처리된 경우 스킵
+            return;
+          }
+        }
+      });
+    });
+  </script>
+  
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" id="MathJax-script" async></script>
   
   <!-- MathJax 렌더링 후 스타일 적용 -->

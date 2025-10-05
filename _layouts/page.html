@@ -2,7 +2,7 @@
 layout: default
 ---
 <div class="c-page-with-sidebar">
-  {% if page.title == 'Home' %}
+  {% if page.url == '/' %}
   <aside class="c-sidebar">
     <div class="c-sidebar__profile">
       <div class="c-sidebar__avatar">
@@ -55,7 +55,7 @@ layout: default
       {% assign categories = site.posts | map: 'category' | uniq | sort %}
       {% for category in categories %}
         {% if category %}
-        <a href="{{ "/tags/" | prepend: site.baseurl }}#{{ category | slugify }}" class="c-sidebar__category">
+        <a href="{{ "/categories/" | prepend: site.baseurl }}#{{ category | slugify }}" class="c-sidebar__category">
           {{ category }}
         </a>
         {% endif %}

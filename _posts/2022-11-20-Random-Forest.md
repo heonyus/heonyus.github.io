@@ -414,6 +414,7 @@ Figure 5에서는 같은 데이터에 대해 세 변수 조합(feature를 3개 �
 <p align="center">
   <img alt="Figure 4" src="https://i.imgur.com/q9IxA91.png" referrerpolicy="no-referrer" loading="lazy" />
 </p>
+
 Figure 6은 Votes 데이터(의회 표결 → 정당 분류)에서 Permutation Importance(OOB 기반)로 변수별 기여도를 측정한 결과다.
 
 - **x축**: 변수(의회 표결 이슈) 인덱스 1~16
@@ -455,8 +456,26 @@ $$
 PE^*_{forest} \le \rho \, PE^*_{tree}
 $$
 
-즉, **트리 간 잔차(residual) 상관이 낮을수록 오차가 작아진다.**  
+즉, **트리 간 잔차(residual) 상관이 낮을수록 오차가 작아진다.** <br>
 실험 결과, Bagging 대비 약 10~20%의 오차 감소를 보였다.
+
+- 트리 $h(x, \Theta)$의 **잔차(residual)** 는 다음과 같이 정의
+- $ρ$ = 트리 간 오차(잔차)의 상관도.
+
+$$
+r(x, \Theta) = Y - h(x, \Theta)
+$$
+
+- $\rho$는 **두 개의 독립적인 트리** $h(\cdot, \Theta)$, $h(\cdot, \Theta')$의 잔차 사이의 **상관계수**
+
+$$
+\rho = \mathrm{Corr}\big(r(X, \Theta),\ r(X, \Theta')\big)
+$$
+
+- $\rho$의 값의 범위는 $[-1, 1]$이며, 실제로는 보통 $0 \sim 1$ 사이의 값을 가짐 <br>(동일한 실수를 반복하면 $\rho$가 커집니다.)
+
+  - **ρ가 크다(≈1)**: 트리들이 **비슷한 분할·비슷한 실수** → 앙상블해도 서로 보완이 적음 → 분산 감소 효과 작음
+  - **ρ가 작다(≈0)**: 트리들이 **서로 다른 방식으로 실수** → 평균/투표로 **서로의 실수를 상쇄** → 분산 크게 감소
 
 | Dataset | Bagging | Random Forest |
 |:--|:--:|:--:|
@@ -465,10 +484,107 @@ $$
 | Friedman #1 | 6.3 | **5.7** |
 | Abalone | 4.9 | **4.6** |
 
+> “$ρ$ 낮추고(다양성$↑$), 트리 강도는 충분히 확보 → RF가 배깅보다 안정적이고 정확.”
+
+1. Test MSE vs #Trees
+
+```py
+# Ensembles (warm_start)
+steps = [10, 30, 60, 100, 150, 200]
+
+bag = BaggingRegressor(
+    base_estimator=DecisionTreeRegressor(random_state=0),
+    n_estimators=1, bootstrap=True, warm_start=True, random_state=42
+)
+rf = RandomForestRegressor(
+    n_estimators=1, max_features=max(1, M//3),
+    bootstrap=True, warm_start=True, random_state=42
+)
+
+bag_mse, rf_mse = [], []
+for n in steps:
+    bag.set_params(n_estimators=n).fit(X_train, y_train)
+    rf.set_params(n_estimators=n).fit(X_train, y_train)
+    bag_mse.append(mean_squared_error(y_test, bag.predict(X_test)))
+    rf_mse.append(mean_squared_error(y_test, rf.predict(X_test)))
+```
+<p align="center">
+  <img alt="Figure 4" src="https://i.imgur.com/V0nscM8.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
+- 두 모델 모두 트리를 늘릴수록 MSE가 감소 → 수렴.
+- (이번 실험 세팅에선) Bagging이 약간 더 낮게 나왔지만, 포인트는 수렴 형태와 비교 프레임입니다.
+
+```py
+def avg_pairwise_corr(residuals_2d):
+    T, N = residuals_2d.shape
+    corrs = []
+    for a in range(T):
+        za = residuals_2d[a] - residuals_2d[a].mean()
+        da = np.sqrt((za**2).sum())
+        if da == 0: 
+            continue
+        for b in range(a+1, T):
+            zb = residuals_2d[b] - residuals_2d[b].mean()
+            db = np.sqrt((zb**2).sum())
+            if db == 0: 
+                continue
+            corrs.append((za @ zb) / (da * db))
+    return float(np.mean(corrs)) if corrs else 0.0
+```
+- 앙상블 구성 요소 사이의 상관을 정량화하는 함수
+
+```py
+def residuals_and_tree_mse(estimators, X, y):
+    preds = np.stack([est.predict(X) for est in estimators], axis=0)
+    residuals = y[None, :] - preds
+    tree_mses = (residuals**2).mean(axis=1)
+    return residuals, float(tree_mses.mean())
+```
+
+- 트리 앙상블 모델의 다양성(잔차 분석)과 정확도(MSE) 계측에 사용
+
+2. RF 회귀 모델에서 실험 결과
+
+<p align="center">
+  <img alt="Figure 4" src="https://i.imgur.com/yGNdtd0.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
+- Residual correlation ρ (평균 잔차 상관)
+
+  $$Bagging ρ ≈ 0.388 > RF ρ ≈ 0.293$$
+
+- RF가 무작위 특성 선택 덕분에 트리 간 잔차 상관을 더 낮춘 모습
+
+<p align="center">
+  <img alt="Figure 4" src="https://i.imgur.com/uK4UE94.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
+- **부등식 근사 정리:**  
+  앙상블의 평균 제곱 오차(MSE)는 다음과 같이 근사적으로 표현할 수 있습니다.
+
+  $$
+  \mathrm{MSE}_{\text{forest}} \approx \rho \cdot \overline{\mathrm{MSE}}_{\text{tree}}
+  $$
+
+  - $\mathrm{MSE}_{\text{forest}}$ : 앙상블(포레스트)의 MSE  
+  - $\overline{\mathrm{MSE}}_{\text{tree}}$ : 개별 트리들의 평균 MSE  
+  - $\rho$ : 트리 간 잔차(오차) 상관계수의 평균
+
+
+  $$
+  \mathrm{MSE}_{\text{forest}} \leq \rho \cdot \overline{\mathrm{MSE}}_{\text{tree}}
+  $$
+  
+  유한한 $K$ (트리 개수)에서 근사적으로 성립함을 실험적으로 확인할 수 있습니다.
+
+ > tree 간 잔차 상관 $ρ$을 낮추면 forest의 MSE가 줄어든다
+
 ## 🧠 Discussion & Conclusion
 
-랜덤 포레스트는 단순한 트리 집합을 넘어  
-**Bias–Variance trade-off를 자동으로 최적화하는 구조**를 갖는다.
+RF는 깊은 트리(낮은 bias)를 다수 만들고, 부트스트랩·무작위 특성 선택으로 트리 간 상관(ρ)을 낮춘 뒤 평균해 variance를 줄인다.<br>
+트리 수를 늘려도 과적합하지 않고(OOB로 즉시 검증 가능), mtry만 조절해 s–ρ 균형(=bias–variance)을 사실상 ‘자동’으로 맞춘다.<br>
+따라서 랜덤 포레스트는 단순한 트리 집합을 넘어 **Bias–Variance trade-off를 자동으로 최적화하는 구조**를 갖는다.<br>
 
 | 특성 | 설명 |
 |------|------|
@@ -477,28 +593,7 @@ $$
 | ⚙️ 효율성 | 병렬화 및 대규모 데이터 처리에 적합 |
 | 🔍 해석성 | Feature Importance 및 OOB로 내부 검증 가능 |
 
-Breiman은 논문 말미에 다음과 같은 흥미로운 가설을 남겼다.
+저자는 논문 말미에 다음과 같은 흥미로운 가설을 남겼다.
 
 > “In later stages, AdaBoost may be emulating a random forest.”  
 > — 즉, Adaboost는 본질적으로 랜덤 포레스트의 확률적 형태일 수 있다는 것이다.
-
----
-
-> “Randomness reduces correlation.  
-> Strength increases bias reduction.  
-> Together they make forests powerful.”  
-> — *Leo Breiman (2001)*
-
----
-
-## 🔗 References
-
-- Breiman, L. (2001). *Random Forests*. Machine Learning, 45(1), 5–32.  
-- Breiman, L. (1996). *Bagging Predictors*. Machine Learning, 26(2), 123–140.  
-- Freund, Y. & Schapire, R. (1996). *Experiments with a new boosting algorithm*.  
-- Dietterich, T. (1998). *An Experimental Comparison of Three Methods for Constructing Ensembles of Decision Trees*.  
-- Ho, T.K. (1998). *The Random Subspace Method for Constructing Decision Forests*. IEEE PAMI.
-
----
-
-#️⃣ #RandomForest #EnsembleLearning #MachineLearning #LeoBreiman #DecisionTree

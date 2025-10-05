@@ -1,0 +1,297 @@
+<!-- <!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>LDA Mini Demo with Plotly</title>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial;}
+    .grid{display:grid; gap:20px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); padding:24px; max-width:1400px; margin:0 auto;}
+    h1,h2{margin:16px 24px;}
+    .card{border:1px solid #e5e7eb; border-radius:12px; padding:12px;}
+    .note{font-size:14px; color:#374151; margin:0 24px 16px;}
+    .code{background:#f8fafc; border:1px solid #e5e7eb; border-radius:8px; padding:8px 10px; font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}
+  </style>
+</head>
+<body>
+  <h1>LDA Generative Sketch (K=3)</h1>
+  <p class="note">
+    수식: <span class="code">Document ~ Σ<sub>k=1..K</sub> θ<sub>k</sub> · Topic<sub>k</sub>, &nbsp; Topic<sub>k</sub> ~ Multinomial(β<sub>k</sub>)</span><br/>
+    예시 파라미터: θ = [0.6, 0.3, 0.1], 단어 = ["data","model","bayes","topic","graph","markov"]
+  </p>
+
+  <div class="grid">
+    <div class="card">
+      <div id="topic1" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <div id="topic2" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <div id="topic3" style="height:300px;"></div>
+    </div>
+    <div class="card">
+      <div id="ternary" style="height:360px;"></div>
+    </div>
+    <div class="card">
+      <div id="doc" style="height:320px;"></div>
+    </div>
+    <div class="card">
+      <div id="stacked" style="height:360px;"></div>
+    </div>
+  </div>
+
+  <script>
+    // ---- Vocabulary & Params ----
+    const words = ["data","model","bayes","topic","graph","markov"]; // V=6
+
+    // Topic word distributions (β_k), each sums to 1
+    const beta1 = [0.25, 0.20, 0.15, 0.15, 0.15, 0.10]; // Topic 1
+    const beta2 = [0.05, 0.10, 0.10, 0.45, 0.20, 0.10]; // Topic 2
+    const beta3 = [0.10, 0.10, 0.30, 0.10, 0.10, 0.30]; // Topic 3
+
+    // Document topic mixture θ
+    const theta = [0.6, 0.3, 0.1];
+
+    // Document word distribution: p(w|θ) = Σ_k θ_k * β_k
+    const doc = words.map((_, j) => theta[0]*beta1[j] + theta[1]*beta2[j] + theta[2]*beta3[j]);
+
+    // Per-topic contributions to each word: θ_k * β_k[j]
+    const contrib1 = words.map((_, j) => theta[0]*beta1[j]);
+    const contrib2 = words.map((_, j) => theta[1]*beta2[j]);
+    const contrib3 = words.map((_, j) => theta[2]*beta3[j]);
+
+    // ---- Plot helpers ----
+    const baseLayout = {
+      margin: {l:40,r:10,t:30,b:40},
+      xaxis: {tickfont:{size:12}},
+      yaxis: {range:[0, Math.max(0.5, Math.max(...doc)*1.25)], tickformat: ".2f"},
+      bargap: 0.2
+    };
+
+    function barTopic(divId, title, probs){
+      Plotly.newPlot(divId, [{
+        type:'bar', x: words, y: probs,
+        hovertemplate: '%{x}: %{y:.3f}<extra></extra>'
+      }], {
+        ...baseLayout,
+        title: {text: title, font:{size:16}},
+        yaxis: {...baseLayout.yaxis, title:"p(w | topic)"},
+        xaxis: {...baseLayout.xaxis, title:"word"}
+      }, {displayModeBar:false, responsive:true});
+    }
+
+    // ---- Draw topic bars ----
+    barTopic('topic1', 'Topic 1 (β₁)', beta1);
+    barTopic('topic2', 'Topic 2 (β₂)', beta2);
+    barTopic('topic3', 'Topic 3 (β₃)', beta3);
+
+    // ---- Ternary plot for θ ----
+    // Plotly ternary uses (a,b,c) that sum to 1; map θ = [θ1,θ2,θ3]
+    Plotly.newPlot('ternary', [{
+      type: 'scatterternary',
+      mode: 'markers+text',
+      a: [theta[0]], b: [theta[1]], c: [theta[2]],
+      text: [`θ = [${theta.map(v=>v.toFixed(2)).join(', ')}]`],
+      textposition:'top center',
+      marker: { size: 12 }
+    }], {
+      title: {text:'Document Topic Mixture θ (Ternary)', font:{size:16}},
+      ternary: {
+        sum: 1,
+        aaxis: { title: 'θ₁', min: 0, tickformat: '.1f' },
+        baxis: { title: 'θ₂', min: 0, tickformat: '.1f' },
+        caxis: { title: 'θ₃', min: 0, tickformat: '.1f' }
+      },
+      margin:{l:30,r:30,t:40,b:20}
+    }, {displayModeBar:false, responsive:true});
+
+    // ---- Document word distribution bar ----
+    Plotly.newPlot('doc', [{
+      type:'bar', x: words, y: doc,
+      name:'p(w|θ)',
+      hovertemplate: '%{x}: %{y:.3f}<extra></extra>'
+    }], {
+      ...baseLayout,
+      title: {text: 'Document Word Distribution p(w|θ)=Σ θ_k β_k', font:{size:16}},
+      yaxis: {...baseLayout.yaxis, title:'probability'},
+      xaxis: {...baseLayout.xaxis, title:'word'}
+    }, {displayModeBar:false, responsive:true});
+
+    // ---- Stacked contributions per word ----
+    Plotly.newPlot('stacked', [
+      {type:'bar', x: words, y: contrib1, name:'θ₁·β₁', hovertemplate:'%{x}: %{y:.3f}<extra></extra>'},
+      {type:'bar', x: words, y: contrib2, name:'θ₂·β₂', hovertemplate:'%{x}: %{y:.3f}<extra></extra>'},
+      {type:'bar', x: words, y: contrib3, name:'θ₃·β₃', hovertemplate:'%{x}: %{y:.3f}<extra></extra>'}
+    ], {
+      ...baseLayout,
+      barmode:'stack',
+      title: {text:'Per-word Contributions (Stacks sum to p(w|θ))', font:{size:16}},
+      yaxis: {...baseLayout.yaxis, title:'probability'},
+      xaxis: {...baseLayout.xaxis, title:'word'},
+      legend: {orientation:'h', y: -0.2}
+    }, {displayModeBar:false, responsive:true});
+  </script>
+</body>
+</html> -->
+
+
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <title>TF-IDF vs LSI vs pLSI — Mini Visual</title>
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans KR", Arial; background:#fff;}
+    h1{margin:16px 24px;}
+    .note{margin:0 24px 12px; color:#374151; font-size:14px;}
+    .grid{display:grid; gap:18px; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); padding:20px; max-width:1400px; margin:0 auto;}
+    .card{border:1px solid #e5e7eb; border-radius:12px; padding:10px;}
+    .caption{font-size:13px; color:#6b7280; margin:6px 4px 0 4px;}
+  </style>
+</head>
+<body>
+  <h1>TF-IDF / LSI / pLSI — 초간단 비교 시각화</h1>
+  <p class="note">
+    코퍼스(문서 3개)와 단어 6개로 구성된 작은 예시입니다. TF-IDF는 실제 계산, LSI 2D는 개념적 예시 좌표, pLSI는 가상의 토픽 파라미터로 시연합니다.
+  </p>
+
+  <div class="grid">
+    <!-- TF-IDF -->
+    <div class="card">
+      <div id="tfidf" style="height:320px;"></div>
+      <div class="caption">[TF-IDF] Doc1의 단어 가중치 막대그래프 (BoW 기반, 해석 쉬움)</div>
+    </div>
+
+    <!-- LSI -->
+    <div class="card">
+      <div id="lsi2d" style="height:360px;"></div>
+      <div class="caption">[LSI] 문서의 잠재 의미 공간(2D) 위치 (SVD 개념적 예시)</div>
+    </div>
+
+    <!-- pLSI: document topic mixtures -->
+    <div class="card">
+      <div id="plsi_doc_topics" style="height:360px;"></div>
+      <div class="caption">[pLSI] 문서별 토픽 혼합 (각 문서가 여러 토픽의 비율로 표현)</div>
+    </div>
+
+    <!-- pLSI: topic-word bars -->
+    <div class="card">
+      <div id="plsi_topic1" style="height:300px;"></div>
+      <div class="caption">[pLSI] Topic 1의 단어 분포 p(w|z=1)</div>
+    </div>
+    <div class="card">
+      <div id="plsi_topic2" style="height:300px;"></div>
+      <div class="caption">[pLSI] Topic 2의 단어 분포 p(w|z=2)</div>
+    </div>
+  </div>
+
+  <script>
+    // -------------------------------
+    // 작은 코퍼스와 단어 집합 정의
+    // -------------------------------
+    const words = ["data","model","topic","graph","bayes","markov"]; // V=6
+    // 세 문서의 단어 카운트 (간단 예시)
+    const D = [
+      [3,2,0,1,0,0], // Doc1: data/model/graph 쪽
+      [0,1,3,0,2,0], // Doc2: topic/bayes 쪽
+      [1,1,1,1,1,1]  // Doc3: 균등 혼합
+    ];
+
+    // -------------------------------
+    // 1) TF-IDF 계산 (Doc1 시각화)
+    // -------------------------------
+    const N = D.length; // 문서 수
+    // 문서 길이
+    const lengths = D.map(row => row.reduce((a,b)=>a+b,0));
+    // DF (document frequency)
+    const df = words.map((_, j) => D.reduce((acc, row)=> acc + (row[j]>0?1:0), 0));
+    // IDF (스무딩 포함)
+    const idf = df.map(dfj => Math.log((N + 1) / (dfj + 1)) + 1);
+    // TF (정규화: count / length)
+    const tf = D.map((row, i) => row.map(v => (lengths[i] ? v/lengths[i] : 0)));
+    // TF-IDF
+    const tfidf = tf.map(row => row.map((tfv, j) => tfv * idf[j]));
+    const doc1_tfidf = tfidf[0];
+
+    Plotly.newPlot('tfidf', [{
+      type:'bar', x: words, y: doc1_tfidf,
+      hovertemplate: '%{x}: %{y:.3f}<extra></extra>'
+    }], {
+      title: {text:'TF-IDF (Doc1)', font:{size:16}},
+      margin:{l:40,r:10,t:40,b:40},
+      xaxis:{title:'word'},
+      yaxis:{title:'weight', tickformat:'.2f'},
+      bargap:0.2
+    }, {displayModeBar:false, responsive:true});
+
+    // -------------------------------
+    // 2) LSI 개념적 2D 임베딩 (간단 예시 좌표)
+    //    - 실제로는 X≈U_k Σ_k V_k^T로 얻은 상위 2성분 투영
+    //    - 여기선 비교를 위한 toy 좌표
+    // -------------------------------
+    const lsiPoints = [
+      {name:'Doc1', x:  1.8, y:  0.5},
+      {name:'Doc2', x: -1.6, y:  0.6},
+      {name:'Doc3', x:  0.0, y: -0.4}
+    ];
+    Plotly.newPlot('lsi2d', [{
+      type:'scatter',
+      mode:'markers+text',
+      x: lsiPoints.map(p=>p.x),
+      y: lsiPoints.map(p=>p.y),
+      text: lsiPoints.map(p=>p.name),
+      textposition:'top center',
+      marker:{size:12}
+    }], {
+      title:{text:'LSI Latent Space (Rank-2, conceptual)', font:{size:16}},
+      margin:{l:40,r:10,t:40,b:40},
+      xaxis:{title:'Component 1'},
+      yaxis:{title:'Component 2'},
+    }, {displayModeBar:false, responsive:true});
+
+    // -------------------------------
+    // 3) pLSI: 문서별 토픽 혼합 & 토픽별 단어 분포
+    //    - 토픽 K=2 가정 (예시 파라미터)
+    // -------------------------------
+    const K = 2;
+    // 문서별 토픽 혼합 p(z|d) (예시로 설정)
+    const pi = [
+      [0.75, 0.25], // Doc1: Topic1 위주
+      [0.20, 0.80], // Doc2: Topic2 위주
+      [0.50, 0.50]  // Doc3: 반반
+    ];
+    // 토픽별 단어분포 p(w|z) (합=1)
+    const phi1 = [0.30,0.25,0.10,0.20,0.10,0.05]; // Topic1: data/model/graph 중심
+    const phi2 = [0.08,0.12,0.40,0.10,0.20,0.10]; // Topic2: topic/bayes 중심
+
+    // 문서별 토픽 혼합 stacked bar
+    Plotly.newPlot('plsi_doc_topics', [
+      {type:'bar', x:['Doc1','Doc2','Doc3'], y: pi.map(p=>p[0]), name:'Topic 1'},
+      {type:'bar', x:['Doc1','Doc2','Doc3'], y: pi.map(p=>p[1]), name:'Topic 2'}
+    ], {
+      title:{text:'pLSI: Document Topic Mixtures p(z|d)', font:{size:16}},
+      barmode:'stack',
+      margin:{l:40,r:10,t:40,b:40},
+      yaxis:{range:[0,1], tickformat:'.1f', title:'proportion'}
+    }, {displayModeBar:false, responsive:true});
+
+    // 토픽별 단어 분포 막대
+    function barTopic(divId, title, probs){
+      Plotly.newPlot(divId, [{
+        type:'bar', x: words, y: probs,
+        hovertemplate:'%{x}: %{y:.3f}<extra></extra>'
+      }], {
+        title:{text:title, font:{size:16}},
+        margin:{l:40,r:10,t:40,b:40},
+        xaxis:{title:'word'}, yaxis:{title:'p(w|z)', range:[0, Math.max(0.5, Math.max(...probs)*1.2)], tickformat:'.2f'}
+      }, {displayModeBar:false, responsive:true});
+    }
+    barTopic('plsi_topic1', 'Topic 1 — p(w|z=1)', phi1);
+    barTopic('plsi_topic2', 'Topic 2 — p(w|z=2)', phi2);
+  </script>
+</body>
+</html>

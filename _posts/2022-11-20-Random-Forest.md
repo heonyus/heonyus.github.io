@@ -45,18 +45,17 @@ $$
 
 - **Bagging**: 데이터 샘플을 무작위로 뽑아 여러 트리를 학습 → 평균화 
 
-<div align="center">
+  - **회귀(Regression)**:  
+    $$
+    \hat{f}_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)
+    $$
 
-$$
-\text{(regression)}\quad \hat{f}_{\text{bag}}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat{f}_b(x)
-$$
+  - **분류(Classification)**:  
+    $$
+    \hat{f}_{\text{bag}}(x) = \mathrm{Mode}\left\{ \hat{f}_1(x), \ldots, \hat{f}_B(x) \right\}
+    $$
 
-$$
-\text{(classification)}\quad \hat{f}_{\text{bag}}(x) = \mathrm{Mode}\left\{ \hat{f}_1(x), \ldots, \hat{f}_B(x) \right\}
-$$
-
-</div>
-- **Boosting**: 이전 오차(분류가 틀린 샘플)에 더 많은 가중치를 두고, 여러 약한 분류기(트리)를 순차적으로 학습하여 성능을 점진적으로 개선하는 방법
+- **Boosting** : 이전 오차(분류가 틀린 샘플)에 더 많은 가중치를 두고, 여러 약한 분류기(트리)를 순차적으로 학습하여 성능을 점진적으로 개선하는 방법
 
   - 최종 예측 함수:  
 
@@ -102,6 +101,7 @@ Breiman은 이 문제를 해결하기 위해 **Random Forest (RF)** 를 제안�
 
 랜덤 포레스트는 **서로 다른 랜덤 벡터 $\Theta_k$** 에 의해 생성된  
 트리 집합 $\{h(x, \Theta_k)\}$ 의 앙상블이다.
+논문에서는는
 
 $$
 H(x) = \text{majority\_vote}\{h(x, \Theta_1), h(x, \Theta_2), \dots, h(x, \Theta_K)\}
@@ -110,7 +110,6 @@ $$
 각 트리는 **훈련 샘플 부트스트래핑 + 무작위 feature 선택**으로 학습된다.  
 트리 수가 충분히 많으면, 예측 확률이 안정화되어 오버피팅이 발생하지 않는다.
 
----
 
 ### 2️⃣ 일반화 오차 수렴 (Convergence)
 

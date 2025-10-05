@@ -64,7 +64,7 @@
         border-bottom: 2px solid var(--link) !important;
         display: inline-block; // underline only as wide as text
         margin-top: 3rem !important;
-        margin-bottom: 2rem !important;
+        margin-bottom: 2.5rem !important;
     }
 
     h3 {
@@ -75,6 +75,11 @@
         display: inline-block; // underline only as wide as text
         margin-top: 2.5rem !important;
         margin-bottom: 1.5rem !important;
+    }
+    
+    // h2 바로 다음에 오는 h3는 더 많은 간격
+    h2 + h3 {
+        margin-top: 3.5rem !important;
     }
 
     h4 {

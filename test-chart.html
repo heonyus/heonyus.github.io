@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TF-IDF Chart Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        h2 { color: #666; margin-top: 30px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Latent Dirichlet Allocation (2003)</h1>
+        
+        <h2>Introduction</h2>
+        <p>텍스트 코퍼스(corpus)를 확률적으로 모델링하려는 시도는 오래전부터 이어져 왔다.<br>
+        기존의 대표적인 접근법은 다음과 같다:</p>
+        
+        <h2>Background</h2>
+        <h3>1. TF-IDF : 문서를 단어의 빈도 벡터로 변환</h3>
+        
+        <div id="tfidf_plot" style="width:100%; height:450px; margin: 20px auto;"></div>
+        
+        <script src="https://cdn.plot.ly/plotly-2.30.0.min.js" charset="utf-8"></script>
+        <script>
+        (function() {
+          function createChart() {
+            const words = ["data","model","topic","bayes","graph","markov"];
+            const weights = [0.35,0.25,0.10,0.05,0.15,0.10];
+            
+            const plotDiv = document.getElementById('tfidf_plot');
+            if (!plotDiv) {
+              console.error('Plot div not found');
+              return;
+            }
+            
+            if (typeof Plotly === 'undefined') {
+              console.error('Plotly not loaded, retrying...');
+              setTimeout(createChart, 100);
+              return;
+            }
+            
+            console.log('Creating chart...');
+            Plotly.newPlot('tfidf_plot', [{
+              type: 'bar',
+              x: words,
+              y: weights,
+              marker: {
+                color: '#60a5fa',
+                line: { color: '#3b82f6', width: 1.5 }
+              },
+              hovertemplate: '<b>%{x}</b><br>Weight: %{y:.2f}<extra></extra>'
+            }], {
+              title: { text: 'TF-IDF Example (Doc1)', font: { size: 18 } },
+              xaxis: { title: 'Words', tickangle: -45 },
+              yaxis: { title: 'TF-IDF Weight', range: [0, 0.4] },
+              margin: { l: 60, r: 30, t: 60, b: 80 },
+              plot_bgcolor: 'rgba(0,0,0,0)',
+              paper_bgcolor: 'rgba(0,0,0,0)'
+            }, {
+              responsive: true,
+              displayModeBar: true,
+              displaylogo: false
+            });
+            console.log('Chart created successfully!');
+          }
+          
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', createChart);
+          } else {
+            createChart();
+          }
+        })();
+        </script>
+        
+        <p><strong>정의</strong>: 단어 t가 문서 d에서 얼마나 중요한지 측정하는 가중치.</p>
+    </div>
+</body>
+</html>

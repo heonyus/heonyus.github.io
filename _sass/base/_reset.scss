@@ -77,10 +77,12 @@ img {
     border: 0;
 }
 
-svg:not(:root) { overflow: hidden; }
+/* Plotly의 clip, overflow 처리를 방해하지 않도록 과도한 hidden 제거 */
+svg:not(:root) { overflow: visible; }
 
 svg {
-    pointer-events: none;
+    /* 전역으로 이벤트를 막지 않음: Plotly, MathJax, Mermaid 등 인터랙션 보장 */
+    pointer-events: auto;
     max-height: 100%
 }
 

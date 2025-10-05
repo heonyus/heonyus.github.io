@@ -13,9 +13,9 @@
         display: -webkit-flex;
         display: -ms-flexbox;
         display: flex;
-        -webkit-flex-wrap: wrap;
-            -ms-flex-wrap: wrap;
-                flex-wrap: wrap;
+        -webkit-flex-wrap: nowrap;
+            -ms-flex-wrap: nowrap;
+                flex-wrap: nowrap;
         -webkit-box-pack: justify;
         -webkit-justify-content: space-between;
             -ms-flex-pack: justify;
@@ -24,17 +24,22 @@
         -webkit-align-items: baseline;
             -ms-flex-align: baseline;
                 align-items: baseline;
+        gap: 2rem;
     }
 }
 
 .c-article__title {
     @include fs--heading-1;
     color: var(--text);
+    flex: 1;
+    min-width: 0;
 }
 
 .c-article__time {
     @include fs--body;
     color: var(--muted);
+    flex-shrink: 0;
+    white-space: nowrap;
 }
 
 .c-article__main {

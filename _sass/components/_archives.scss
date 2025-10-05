@@ -46,6 +46,14 @@
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
     border-top: 1px solid #EFF1F3;
+    text-decoration: none;
+    color: var(--text);
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+        background-color: var(--code-bg);
+    }
+    
     @media screen and (min-width: $bp__sm) {
         display: -webkit-box;
         display: -webkit-flex;
@@ -66,11 +74,16 @@
 
     h3 {
         @include fs--body;
+        color: var(--text);
     }
 
     p {
         @include fs--body;
         color: #515862;
+    }
+    
+    time {
+        color: var(--muted);
     }
 }
 

@@ -131,10 +131,10 @@ X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.3, random_state=123, stratify=y
 )
 ```
-<p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/inmAGai.png"loading="lazy" />
-</p>
 
+<p align="center">
+  <img alt="Figure 1" src="https://i.imgur.com/inmAGai.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
 
 랜덤 포레스트의 일반화 오차는 다음과 같다:
 
@@ -215,16 +215,22 @@ def avg_pairwise_correlation_indicator(preds_2d, y_true):
 mtry는 랜덤 포레스트(Random Forest) 모델에서 각 트리의 **노드가 분할(split)할 때 참고하는 “무작위 feature 개수”**를 뜻한다.
 
 <p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/8WXpfTf.png"loading="lazy" />
+  <img alt="Figure 1" src="https://i.imgur.com/r0ErscE.png" referrerpolicy="no-referrer" loading="lazy" />
 </p>
 
 - Strength(s) 는 mtry가 커질수록 ↑ (개별 트리가 강해짐)
 - Correlation(ρ) 도 mtry가 커질수록 ↑ (트리들이 비슷해짐)
 
 <p align="center">
-  <img alt="Figure 1" src="https://i.imgur.com/gOzubPx.png"loading="lazy" />
+  <img alt="Figure 1" src="https://i.imgur.com/0CCiVWZ.png" referrerpolicy="no-referrer" loading="lazy" />
 </p>
+
 - Test Error 는 중간 mtry에서 저점(논문과 유사한 “균형점”)
+
+<p align="center">
+  <img alt="Figure 1" src="https://i.imgur.com/qJyuepg.png" referrerpolicy="no-referrer" loading="lazy" />
+</p>
+
 
 ### 4️⃣ Out-of-Bag (OOB) 추정
 

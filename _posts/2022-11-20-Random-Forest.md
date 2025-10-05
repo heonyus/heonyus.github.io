@@ -2,6 +2,7 @@
 layout: post
 title: "Random Forests (2001)"
 date: 2022-11-20
+category: ML
 tags: [Machine Learning, Ensemble Learning, Decision Tree, Statistics, Breiman]
 ---
 

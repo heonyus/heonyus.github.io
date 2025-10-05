@@ -2,6 +2,7 @@
 layout: post
 title: "An Example of Statistical Investigation of the Text Eugene Onegin Concerning the Connection of Samples in Chains(1913)"
 date: 2022-06-02
+category: NLP
 tags: [paper, markov]
 ---
 

@@ -2,6 +2,7 @@
 layout: post
 title: "A Vector Space Model for Automatic Indexing(1986)"
 date: 2022-06-25
+category: ML
 tags: [Backpropagation, Neural Networks, Deep Learning, Seminal Paper]
 ---
 # [논문리뷰] Learning representations by back-propagating errors

@@ -1,0 +1,155 @@
+/* ==========================================================================
+   Sidebar
+   ========================================================================== */
+
+.c-page-with-sidebar {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 4rem;
+    align-items: start;
+
+    @media (max-width: 1024px) {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+
+        .c-sidebar {
+            position: static;
+        }
+    }
+}
+
+.c-sidebar {
+    position: sticky;
+    top: 10rem;
+    
+    &__profile {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    &__avatar {
+        width: 100%;
+        aspect-ratio: 1;
+        border-radius: 50%;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        border: 2px solid var(--border);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__name {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text);
+    }
+
+    &__username {
+        font-size: 1.6rem;
+        color: var(--muted);
+        margin: 0;
+    }
+
+    &__details {
+        padding: 2rem 0;
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 2rem;
+    }
+
+    &__item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        margin-bottom: 1rem;
+        font-size: 1.4rem;
+        color: var(--text);
+
+        &:last-child {
+            margin-bottom: 0;
+        }
+
+        svg {
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        a {
+            color: var(--link);
+            text-decoration: none;
+            word-break: break-all;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    &__categories {
+        h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+    }
+
+    &__category {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        margin: 0 0.5rem 0.5rem 0;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text);
+        text-decoration: none;
+        font-size: 1.3rem;
+        transition: all 0.2s ease;
+
+        &:hover {
+            border-color: var(--link);
+            color: var(--link);
+        }
+    }
+}
+
+// 다크 모드
+[data-theme='dark'] {
+    .c-sidebar {
+        &__name {
+            color: #f0f6fc;
+        }
+
+        &__username {
+            color: #8b949e;
+        }
+
+        &__item {
+            color: #c9d1d9;
+
+            svg {
+                color: #8b949e;
+            }
+
+            a {
+                color: #58a6ff;
+            }
+        }
+
+        &__category {
+            background: #0d1117;
+            border-color: #30363d;
+            color: #c9d1d9;
+
+            &:hover {
+                border-color: #58a6ff;
+                color: #58a6ff;
+            }
+        }
+    }
+}

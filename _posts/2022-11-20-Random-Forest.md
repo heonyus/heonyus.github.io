@@ -99,54 +99,132 @@ Breiman은 이 문제를 해결하기 위해 **Random Forest (RF)** 를 제안�
 ## Method
 ### 1️⃣ 정의 (Definition)
 
-랜덤 포레스트는 **서로 다른 랜덤 벡터 $\Theta_k$** 에 의해 생성된  
-트리 집합 $\{h(x, \Theta_k)\}$ 의 앙상블이다.
-논문에서는는
+랜덤 포레스트는 **서로 다른 랜덤 벡터 $\Theta_k$** 에 의해 생성된 트리 집합 $\{h(x, \Theta_k)\}$ 의 앙상블이다.<br>
+본 논문에서는 $i.i.d.$ 랜덤 벡터 $Θₖ$ “각 트리가 한 표를 던진다(casts a unit vote)”라고 이야기 한다.<br>
+많은 수의 트리를 만든 뒤 가장 많은 표를 받은 클래스에 투표한다.<br>
+우리는 이런 절차들을 랜덤 포레스트라고 부른다.
 
 $$
 H(x) = \text{majority\_vote}\{h(x, \Theta_1), h(x, \Theta_2), \dots, h(x, \Theta_K)\}
 $$
 
-각 트리는 **훈련 샘플 부트스트래핑 + 무작위 feature 선택**으로 학습된다.  
-트리 수가 충분히 많으면, 예측 확률이 안정화되어 오버피팅이 발생하지 않는다.
+$$
+H(x) = \arg\max_{c \in \mathcal{Y}} \sum_{k=1}^K \mathbb{1}\left[ h(x, \Theta_k) = c \right]
+$$
 
+각 트리는 **훈련 샘플 부트스트래핑 + 무작위 feature 선택**으로 학습된다.<br>
+트리 수가 충분히 많으면, 예측 확률이 안정화되어 오버피팅이 발생하지 않는다.<br>
 
 ### 2️⃣ 일반화 오차 수렴 (Convergence)
+```python
+X, y = make_classification(
+    n_samples=3000,
+    n_features=16,
+    n_informative=6,
+    n_redundant=4,
+    n_classes=2,
+    class_sep=1.2,
+    flip_y=0.03,
+    random_state=42
+)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=123, stratify=y
+)
+```
+<p align="center">
+  <img alt="Figure 1" src="https://i.imgur.com/inmAGai.png"loading="lazy" />
+</p>
+
 
 랜덤 포레스트의 일반화 오차는 다음과 같다:
 
 $$
-PE^* = P_{X,Y}\big(P_\Theta(h(X,\Theta)=Y) - \max_{j \neq Y} P_\Theta(h(X,\Theta)=j) < 0 \big)
-$$
+PE(Prediction Error)^* = P_{X,Y}\big(P_\Theta(h(X,\Theta)=Y) - \max_{j \neq Y} P_\Theta(h(X,\Theta)=j) < 0 \big)
+$$ 
 
-이는 **강한 대수의 법칙(Strong Law of Large Numbers)** 에 의해  
-트리 수 $K \to \infty$ 일 때 수렴한다.  
+> 논문에서는 $PE(Prediction Error)^*$를 margin 이라고 표현함함
+
+이는 **강한 대수의 법칙(Strong Law of Large Numbers)** 에 의해 트리 수 $K \to \infty$ 일 때 수렴한다.<br>
 즉, 트리를 무한히 추가해도 **overfitting이 일어나지 않는다.**
-
----
 
 ### 3️⃣ Strength–Correlation 이론
 
-Breiman은 RF의 정확도(Generalization Error)가  
-트리의 **강도(strength)** 와 **상관(correlation)** 의 함수임을 수학적으로 증명했다.
+본 논문에서는 Random Forest의 정확도(Generalization Error; test 데이터셋에서 틀릴 확률)가 트리의 **강도(strength)** 와 **상관(correlation)** 의 함수임을 수학적으로 증명했다.
 
 $$
-PE^* \le \frac{\rho (1 - s^2)}{s^2}
+PE(Prediction Error)^* \le \frac{\rho (1 - s^2)}{s^2}
 $$
+
+- 일반화 오차의 상한(bound)
+  - 트리의 강도 $s$가 증가할수록 $(1-s^2)$가 작아지고 $s^2$가 커지므로, 오차 상한이 낮아짐
+  - 트리 간 상관관계 $\rho$가 낮을수록 오차 상한이 낮아짐
 
 | 항목 | 의미 |
 |------|------|
 | $s$ | 각 트리의 평균적인 분류 정확도 (Strength) |
 | $\rho$ | 트리 간 예측 상관관계 (Correlation) |
 
-즉,  
-- 트리의 **강도(s)** 는 높을수록 좋고,  
-- 트리 간 **상관(ρ)** 은 낮을수록 좋다.
+- 트리의 **강도(strength, $s$)** 는 높을수록 좋고
+  - 강도($s$)는 정답에 대해 평균적으로 얼마나 “여유 있게” 이기는지를 나타내는 **평균 마진(margin)** 으로 정의
+  - 논문에서는 $s = \mathbb{E}_{X,Y}[\text{margin}]$ 형태로 수식화
+  - 즉, 평균 마진이 클수록(= 강도 ↑) 예측이 더 자신 있고 안정적
+- 트리 간 **상관(correlation, $𝜌$)** 은 낮을수록 좋다.
 
-> **Rule of Thumb**  
-> 낮은 ρ / 높은 s → 낮은 일반화 오차
+> **Rule of Thumb**  <br>
+> 낮은 ρ / 높은 s → 낮은 일반화 오차 <br>
+> 강도는 높게 상관은 낮게 만들수록 일반화 오차가 작아짐짐
 
----
+```py
+def majority_vote(preds_2d):
+    votes_for_1 = preds_2d.sum(axis=0)
+    votes_for_0 = preds_2d.shape[0] - votes_for_1
+    return (votes_for_1 >= votes_for_0).astype(int)
+```
+
+```py
+def binary_margin_from_votes(preds_2d, y_true):
+    n_trees = preds_2d.shape[0]
+    votes_for_1 = preds_2d.sum(axis=0)
+    p1 = votes_for_1 / n_trees
+    p0 = 1 - p1
+    p_correct = np.where(y_true == 1, p1, p0)
+    p_incorrect = 1 - p_correct
+    margin = p_correct - p_incorrect
+    return margin
+```
+
+```py
+def avg_pairwise_correlation_indicator(preds_2d, y_true):
+    Z = (preds_2d == y_true[None, :]).astype(float)
+    T, N = Z.shape
+    Zc = Z - Z.mean(axis=1, keepdims=True)
+    denom = np.sqrt((Zc**2).sum(axis=1, keepdims=True) * (Zc**2).sum(axis=1)[None, :])
+    corrs = []
+    for a, b in combinations(range(T), 2):
+        za = Zc[a]; zb = Zc[b]
+        num = (za * zb).sum()
+        da = np.sqrt((za**2).sum()); db = np.sqrt((zb**2).sum())
+        if da == 0 or db == 0:
+            continue
+        corrs.append(num / (da * db))
+    if len(corrs) == 0:
+        return 0.0
+    return float(np.mean(corrs))
+```
+
+mtry는 랜덤 포레스트(Random Forest) 모델에서 각 트리의 **노드가 분할(split)할 때 참고하는 “무작위 feature 개수”**를 뜻한다.
+
+<p align="center">
+  <img alt="Figure 1" src="https://i.imgur.com/8WXpfTf.png"loading="lazy" />
+</p>
+
+- Strength(s) 는 mtry가 커질수록 ↑ (개별 트리가 강해짐)
+- Correlation(ρ) 도 mtry가 커질수록 ↑ (트리들이 비슷해짐)
+
+<p align="center">
+  <img alt="Figure 1" src="https://i.imgur.com/gOzubPx.png"loading="lazy" />
+</p>
+- Test Error 는 중간 mtry에서 저점(논문과 유사한 “균형점”)
 
 ### 4️⃣ Out-of-Bag (OOB) 추정
 

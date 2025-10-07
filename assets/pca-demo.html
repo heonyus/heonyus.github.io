@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PCA Interactive Demo</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .control-group label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 120px;
+        }
+        .slider-container {
+            flex: 1;
+            min-width: 200px;
+        }
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .value-display {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .plot-container {
+            padding: 30px;
+        }
+        .info-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .info-panel h3 {
+            margin: 0 0 15px 0;
+            color: #495057;
+        }
+        .info-panel p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>PCA Interactive Demo</h1>
+            <p>Principal Component Analysis를 통한 차원 축소 시각화</p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label>데이터 포인트 수:</label>
+                <div class="slider-container">
+                    <input type="range" id="nPoints" class="slider" min="50" max="500" value="200">
+                </div>
+                <div class="value-display" id="nPointsValue">200</div>
+            </div>
+            
+            <div class="control-group">
+                <label>노이즈 레벨:</label>
+                <div class="slider-container">
+                    <input type="range" id="noiseLevel" class="slider" min="0" max="0.5" step="0.01" value="0.1">
+                </div>
+                <div class="value-display" id="noiseValue">0.10</div>
+            </div>
+            
+            <div class="control-group">
+                <label>회전 각도:</label>
+                <div class="slider-container">
+                    <input type="range" id="rotation" class="slider" min="0" max="360" value="45">
+                </div>
+                <div class="value-display" id="rotationValue">45°</div>
+            </div>
+            
+            <div class="control-group">
+                <button class="button" onclick="generateData()">새 데이터 생성</button>
+                <button class="button" onclick="toggleAnimation()">애니메이션 토글</button>
+            </div>
+        </div>
+        
+        <div class="plot-container">
+            <div id="plot"></div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>PCA 작동 원리</h3>
+            <p><strong>1단계:</strong> 데이터의 평균을 0으로 맞춥니다 (중심화)</p>
+            <p><strong>2단계:</strong> 공분산 행렬을 계산합니다</p>
+            <p><strong>3단계:</strong> 고유값 분해를 통해 주성분을 찾습니다</p>
+            <p><strong>4단계:</strong> 가장 큰 분산을 가지는 방향으로 데이터를 투영합니다</p>
+            <p><strong>결과:</strong> 원본 데이터의 2차원 표현을 얻어 차원을 축소합니다</p>
+        </div>
+    </div>
+
+    <script>
+        let animationId;
+        let isAnimating = false;
+        let currentData = null;
+
+        function generateData() {
+            const nPoints = parseInt(document.getElementById('nPoints').value);
+            const noiseLevel = parseFloat(document.getElementById('noiseLevel').value);
+            const rotation = parseFloat(document.getElementById('rotation').value) * Math.PI / 180;
+            
+            // 타원형 데이터 생성
+            const t = Array.from({length: nPoints}, (_, i) => (i / nPoints) * 2 * Math.PI);
+            const x = t.map(ti => 3 * Math.cos(ti) + (Math.random() - 0.5) * noiseLevel);
+            const y = t.map(ti => 1 * Math.sin(ti) + (Math.random() - 0.5) * noiseLevel);
+            
+            // 회전 적용
+            const cos = Math.cos(rotation);
+            const sin = Math.sin(rotation);
+            const rotatedX = x.map((xi, i) => xi * cos - y[i] * sin);
+            const rotatedY = x.map((xi, i) => xi * sin + y[i] * cos);
+            
+            currentData = {x: rotatedX, y: rotatedY};
+            updatePlot();
+        }
+
+        function updatePlot() {
+            if (!currentData) return;
+            
+            const {x, y} = currentData;
+            
+            // PCA 계산
+            const n = x.length;
+            const meanX = x.reduce((a, b) => a + b, 0) / n;
+            const meanY = y.reduce((a, b) => a + b, 0) / n;
+            
+            // 중심화
+            const centeredX = x.map(xi => xi - meanX);
+            const centeredY = y.map(yi => yi - meanY);
+            
+            // 공분산 행렬 계산
+            const covXX = centeredX.reduce((sum, xi) => sum + xi * xi, 0) / (n - 1);
+            const covYY = centeredY.reduce((sum, yi) => sum + yi * yi, 0) / (n - 1);
+            const covXY = centeredX.reduce((sum, xi, i) => sum + xi * centeredY[i], 0) / (n - 1);
+            
+            // 고유값과 고유벡터 계산
+            const trace = covXX + covYY;
+            const det = covXX * covYY - covXY * covXY;
+            const eigenval1 = (trace + Math.sqrt(trace * trace - 4 * det)) / 2;
+            const eigenval2 = (trace - Math.sqrt(trace * trace - 4 * det)) / 2;
+            
+            let eigenvec1, eigenvec2;
+            if (Math.abs(covXY) < 1e-10) {
+                eigenvec1 = [1, 0];
+                eigenvec2 = [0, 1];
+            } else {
+                eigenvec1 = [1, (eigenval1 - covXX) / covXY];
+                eigenvec2 = [1, (eigenval2 - covXX) / covXY];
+            }
+            
+            // 정규화
+            const norm1 = Math.sqrt(eigenvec1[0] * eigenvec1[0] + eigenvec1[1] * eigenvec1[1]);
+            const norm2 = Math.sqrt(eigenvec2[0] * eigenvec2[0] + eigenvec2[1] * eigenvec2[1]);
+            eigenvec1 = [eigenvec1[0] / norm1, eigenvec1[1] / norm1];
+            eigenvec2 = [eigenvec2[0] / norm2, eigenvec2[1] / norm2];
+            
+            // 주성분 벡터 (스케일링)
+            const scale1 = Math.sqrt(eigenval1) * 3;
+            const scale2 = Math.sqrt(eigenval2) * 3;
+            
+            const pc1X = [meanX - eigenvec1[0] * scale1, meanX + eigenvec1[0] * scale1];
+            const pc1Y = [meanY - eigenvec1[1] * scale1, meanY + eigenvec1[1] * scale1];
+            const pc2X = [meanX - eigenvec2[0] * scale2, meanX + eigenvec2[0] * scale2];
+            const pc2Y = [meanY - eigenvec2[1] * scale2, meanY + eigenvec2[1] * scale2];
+            
+            // 투영된 데이터
+            const projectedX = centeredX.map((xi, i) => 
+                meanX + (xi * eigenvec1[0] + centeredY[i] * eigenvec1[1]) * eigenvec1[0]
+            );
+            const projectedY = centeredX.map((xi, i) => 
+                meanY + (xi * eigenvec1[0] + centeredY[i] * eigenvec1[1]) * eigenvec1[1]
+            );
+            
+            const data = [
+                {
+                    x: x,
+                    y: y,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: '원본 데이터',
+                    marker: {
+                        color: 'rgba(102, 126, 234, 0.6)',
+                        size: 6,
+                        line: {
+                            color: 'rgba(102, 126, 234, 0.8)',
+                            width: 1
+                        }
+                    }
+                },
+                {
+                    x: pc1X,
+                    y: pc1Y,
+                    mode: 'lines',
+                    type: 'scatter',
+                    name: '제1주성분',
+                    line: {
+                        color: 'red',
+                        width: 4
+                    }
+                },
+                {
+                    x: pc2X,
+                    y: pc2Y,
+                    mode: 'lines',
+                    type: 'scatter',
+                    name: '제2주성분',
+                    line: {
+                        color: 'orange',
+                        width: 4
+                    }
+                },
+                {
+                    x: projectedX,
+                    y: projectedY,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: '투영된 데이터',
+                    marker: {
+                        color: 'rgba(255, 0, 0, 0.6)',
+                        size: 4,
+                        symbol: 'diamond'
+                    }
+                }
+            ];
+            
+            const layout = {
+                title: {
+                    text: 'PCA (Principal Component Analysis) 시각화',
+                    font: { size: 20, color: '#495057' }
+                },
+                xaxis: {
+                    title: 'X 좌표',
+                    gridcolor: '#e9ecef',
+                    zeroline: false
+                },
+                yaxis: {
+                    title: 'Y 좌표',
+                    gridcolor: '#e9ecef',
+                    zeroline: false
+                },
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                legend: {
+                    x: 0.02,
+                    y: 0.98,
+                    bgcolor: 'rgba(255,255,255,0.8)',
+                    bordercolor: '#e9ecef',
+                    borderwidth: 1
+                },
+                margin: { t: 60, r: 20, b: 60, l: 60 }
+            };
+            
+            Plotly.newPlot('plot', data, layout, {responsive: true});
+        }
+
+        function toggleAnimation() {
+            if (isAnimating) {
+                cancelAnimationFrame(animationId);
+                isAnimating = false;
+                document.querySelector('button[onclick="toggleAnimation()"]').textContent = '애니메이션 시작';
+            } else {
+                isAnimating = true;
+                document.querySelector('button[onclick="toggleAnimation()"]').textContent = '애니메이션 중지';
+                animate();
+            }
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            
+            const rotationSlider = document.getElementById('rotation');
+            let currentRotation = parseFloat(rotationSlider.value);
+            currentRotation = (currentRotation + 1) % 360;
+            rotationSlider.value = currentRotation;
+            document.getElementById('rotationValue').textContent = currentRotation + '°';
+            
+            generateData();
+            
+            animationId = requestAnimationFrame(() => {
+                setTimeout(animate, 50);
+            });
+        }
+
+        // 이벤트 리스너
+        document.getElementById('nPoints').addEventListener('input', function() {
+            document.getElementById('nPointsValue').textContent = this.value;
+            generateData();
+        });
+
+        document.getElementById('noiseLevel').addEventListener('input', function() {
+            document.getElementById('noiseValue').textContent = parseFloat(this.value).toFixed(2);
+            generateData();
+        });
+
+        document.getElementById('rotation').addEventListener('input', function() {
+            document.getElementById('rotationValue').textContent = this.value + '°';
+            generateData();
+        });
+
+        // 초기 데이터 생성
+        generateData();
+    </script>
+</body>
+</html>

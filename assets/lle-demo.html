@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLE Interactive Demo</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .controls {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .control-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .control-group label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 120px;
+        }
+        .slider-container {
+            flex: 1;
+            min-width: 200px;
+        }
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+        .value-display {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            min-width: 60px;
+            text-align: center;
+        }
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .plot-container {
+            padding: 30px;
+        }
+        .info-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        .info-panel h3 {
+            margin: 0 0 15px 0;
+            color: #495057;
+        }
+        .info-panel p {
+            margin: 10px 0;
+            line-height: 1.6;
+            color: #6c757d;
+        }
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .step {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border-radius: 25px;
+            background: #e9ecef;
+            color: #6c757d;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .step.active {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LLE Interactive Demo</h1>
+            <p>Locally Linear Embedding을 통한 비선형 차원 축소</p>
+        </div>
+        
+        <div class="controls">
+            <div class="step-indicator">
+                <div class="step active" id="step1">1. 고차원 데이터</div>
+                <div class="step" id="step2">2. 이웃 찾기</div>
+                <div class="step" id="step3">3. 가중치 계산</div>
+                <div class="step" id="step4">4. 저차원 임베딩</div>
+            </div>
+            
+            <div class="control-group">
+                <label>데이터 포인트 수:</label>
+                <div class="slider-container">
+                    <input type="range" id="nPoints" class="slider" min="100" max="300" value="200">
+                </div>
+                <div class="value-display" id="nPointsValue">200</div>
+            </div>
+            
+            <div class="control-group">
+                <label>이웃 수 (k):</label>
+                <div class="slider-container">
+                    <input type="range" id="kNeighbors" class="slider" min="5" max="20" value="10">
+                </div>
+                <div class="value-display" id="kValue">10</div>
+            </div>
+            
+            <div class="control-group">
+                <label>노이즈 레벨:</label>
+                <div class="slider-container">
+                    <input type="range" id="noiseLevel" class="slider" min="0" max="0.3" step="0.01" value="0.05">
+                </div>
+                <div class="value-display" id="noiseValue">0.05</div>
+            </div>
+            
+            <div class="control-group">
+                <button class="button" onclick="generateData()">새 데이터 생성</button>
+                <button class="button" onclick="runLLE()">LLE 실행</button>
+                <button class="button" onclick="toggleAnimation()">애니메이션 토글</button>
+            </div>
+        </div>
+        
+        <div class="plot-container">
+            <div id="plot"></div>
+        </div>
+        
+        <div class="info-panel">
+            <h3>LLE (Locally Linear Embedding) 작동 원리</h3>
+            <p><strong>1단계:</strong> 각 데이터 포인트의 k개 이웃을 찾습니다</p>
+            <p><strong>2단계:</strong> 각 포인트를 이웃들의 선형 결합으로 재구성하는 가중치를 계산합니다</p>
+            <p><strong>3단계:</strong> 저차원 공간에서도 같은 가중치로 재구성이 유지되도록 임베딩을 찾습니다</p>
+            <p><strong>핵심:</strong> 국소적으로는 선형이지만 전역적으로는 비선형인 매니폴드를 보존합니다</p>
+        </div>
+    </div>
+
+    <script>
+        let animationId;
+        let isAnimating = false;
+        let currentData = null;
+        let currentStep = 1;
+
+        function generateData() {
+            const nPoints = parseInt(document.getElementById('nPoints').value);
+            const noiseLevel = parseFloat(document.getElementById('noiseLevel').value);
+            
+            // 스위스 롤 데이터 생성
+            const t = Array.from({length: nPoints}, (_, i) => (i / nPoints) * 3 * Math.PI);
+            const x = t.map(ti => ti * Math.cos(ti) + (Math.random() - 0.5) * noiseLevel);
+            const y = t.map(ti => ti * Math.sin(ti) + (Math.random() - 0.5) * noiseLevel);
+            const z = t.map(ti => ti * 0.3 + (Math.random() - 0.5) * noiseLevel);
+            
+            currentData = {x, y, z, t};
+            updateStep(1);
+            updatePlot();
+        }
+
+        function updateStep(step) {
+            currentStep = step;
+            document.querySelectorAll('.step').forEach((el, i) => {
+                el.classList.toggle('active', i + 1 === step);
+            });
+        }
+
+        function updatePlot() {
+            if (!currentData) return;
+            
+            const {x, y, z, t} = currentData;
+            const k = parseInt(document.getElementById('kNeighbors').value);
+            
+            let data = [];
+            
+            if (currentStep === 1) {
+                // 고차원 데이터 표시
+                data = [{
+                    x: x,
+                    y: y,
+                    z: z,
+                    mode: 'markers',
+                    type: 'scatter3d',
+                    name: '고차원 데이터 (3D)',
+                    marker: {
+                        color: t,
+                        colorscale: 'Viridis',
+                        size: 4,
+                        line: {
+                            color: 'rgba(0,0,0,0.1)',
+                            width: 1
+                        }
+                    }
+                }];
+            } else if (currentStep === 2) {
+                // 이웃 연결 표시
+                const neighbors = findNeighbors(x, y, z, k);
+                const neighborTraces = [];
+                
+                // 데이터 포인트
+                neighborTraces.push({
+                    x: x,
+                    y: y,
+                    z: z,
+                    mode: 'markers',
+                    type: 'scatter3d',
+                    name: '데이터 포인트',
+                    marker: {
+                        color: t,
+                        colorscale: 'Viridis',
+                        size: 4
+                    }
+                });
+                
+                // 이웃 연결선 (일부만 표시)
+                for (let i = 0; i < Math.min(20, x.length); i += 5) {
+                    const pointNeighbors = neighbors[i];
+                    for (let j = 0; j < pointNeighbors.length; j++) {
+                        const neighborIdx = pointNeighbors[j];
+                        neighborTraces.push({
+                            x: [x[i], x[neighborIdx]],
+                            y: [y[i], y[neighborIdx]],
+                            z: [z[i], z[neighborIdx]],
+                            mode: 'lines',
+                            type: 'scatter3d',
+                            name: i === 0 && j === 0 ? '이웃 연결' : '',
+                            line: {
+                                color: 'rgba(255,0,0,0.3)',
+                                width: 1
+                            },
+                            showlegend: i === 0 && j === 0
+                        });
+                    }
+                }
+                
+                data = neighborTraces;
+            } else if (currentStep === 3) {
+                // 가중치 시각화 (색상으로 표현)
+                const weights = calculateWeights(x, y, z, k);
+                const maxWeight = Math.max(...weights.flat());
+                
+                data = [{
+                    x: x,
+                    y: y,
+                    z: z,
+                    mode: 'markers',
+                    type: 'scatter3d',
+                    name: '가중치 시각화',
+                    marker: {
+                        color: weights.map(w => Math.max(...w)),
+                        colorscale: 'Reds',
+                        size: 6,
+                        colorbar: {
+                            title: '가중치 크기'
+                        }
+                    }
+                }];
+            } else if (currentStep === 4) {
+                // 저차원 임베딩
+                const embedding = runLLEAlgorithm(x, y, z, k);
+                
+                data = [{
+                    x: embedding.x,
+                    y: embedding.y,
+                    mode: 'markers',
+                    type: 'scatter',
+                    name: 'LLE 저차원 임베딩',
+                    marker: {
+                        color: t,
+                        colorscale: 'Viridis',
+                        size: 6,
+                        line: {
+                            color: 'rgba(0,0,0,0.1)',
+                            width: 1
+                        }
+                    }
+                }];
+            }
+            
+            const layout = {
+                title: {
+                    text: getStepTitle(),
+                    font: { size: 20, color: '#495057' }
+                },
+                xaxis: {
+                    title: currentStep === 4 ? 'LLE 차원 1' : 'X 좌표',
+                    gridcolor: '#e9ecef',
+                    zeroline: false
+                },
+                yaxis: {
+                    title: currentStep === 4 ? 'LLE 차원 2' : 'Y 좌표',
+                    gridcolor: '#e9ecef',
+                    zeroline: false
+                },
+                zaxis: currentStep < 4 ? {
+                    title: 'Z 좌표',
+                    gridcolor: '#e9ecef',
+                    zeroline: false
+                } : undefined,
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                legend: {
+                    x: 0.02,
+                    y: 0.98,
+                    bgcolor: 'rgba(255,255,255,0.8)',
+                    bordercolor: '#e9ecef',
+                    borderwidth: 1
+                },
+                margin: { t: 60, r: 20, b: 60, l: 60 }
+            };
+            
+            if (currentStep < 4) {
+                layout.scene = {
+                    xaxis: { title: 'X' },
+                    yaxis: { title: 'Y' },
+                    zaxis: { title: 'Z' },
+                    camera: {
+                        eye: { x: 1.5, y: 1.5, z: 1.5 }
+                    }
+                };
+            }
+            
+            Plotly.newPlot('plot', data, layout, {responsive: true});
+        }
+
+        function getStepTitle() {
+            const titles = [
+                '1단계: 고차원 데이터 (3D 스위스 롤)',
+                '2단계: 각 포인트의 k개 이웃 찾기',
+                '3단계: 이웃들로의 선형 재구성 가중치 계산',
+                '4단계: 저차원 공간에서의 LLE 임베딩'
+            ];
+            return titles[currentStep - 1];
+        }
+
+        function findNeighbors(x, y, z, k) {
+            const n = x.length;
+            const neighbors = [];
+            
+            for (let i = 0; i < n; i++) {
+                const distances = [];
+                for (let j = 0; j < n; j++) {
+                    if (i !== j) {
+                        const dist = Math.sqrt(
+                            Math.pow(x[i] - x[j], 2) + 
+                            Math.pow(y[i] - y[j], 2) + 
+                            Math.pow(z[i] - z[j], 2)
+                        );
+                        distances.push({index: j, distance: dist});
+                    }
+                }
+                distances.sort((a, b) => a.distance - b.distance);
+                neighbors.push(distances.slice(0, k).map(d => d.index));
+            }
+            
+            return neighbors;
+        }
+
+        function calculateWeights(x, y, z, k) {
+            const neighbors = findNeighbors(x, y, z, k);
+            const n = x.length;
+            const weights = [];
+            
+            for (let i = 0; i < n; i++) {
+                const pointNeighbors = neighbors[i];
+                const Xi = [x[i], y[i], z[i]];
+                const neighborPoints = pointNeighbors.map(idx => [x[idx], y[idx], z[idx]]);
+                
+                // 간단한 가중치 계산 (실제 LLE는 더 복잡함)
+                const distances = pointNeighbors.map(idx => 
+                    Math.sqrt(
+                        Math.pow(x[i] - x[idx], 2) + 
+                        Math.pow(y[i] - y[idx], 2) + 
+                        Math.pow(z[i] - z[idx], 2)
+                    )
+                );
+                const totalDist = distances.reduce((a, b) => a + b, 0);
+                const pointWeights = distances.map(d => totalDist > 0 ? (totalDist - d) / (totalDist * (k - 1)) : 1/k);
+                
+                weights.push(pointWeights);
+            }
+            
+            return weights;
+        }
+
+        function runLLEAlgorithm(x, y, z, k) {
+            // 간단한 LLE 구현 (실제로는 더 복잡한 알고리즘)
+            const n = x.length;
+            const neighbors = findNeighbors(x, y, z, k);
+            const weights = calculateWeights(x, y, z, k);
+            
+            // 2D 투영 (실제 LLE는 고유값 분해 사용)
+            const embeddingX = [];
+            const embeddingY = [];
+            
+            for (let i = 0; i < n; i++) {
+                let sumX = 0, sumY = 0;
+                const pointNeighbors = neighbors[i];
+                const pointWeights = weights[i];
+                
+                for (let j = 0; j < pointNeighbors.length; j++) {
+                    const neighborIdx = pointNeighbors[j];
+                    sumX += pointWeights[j] * x[neighborIdx];
+                    sumY += pointWeights[j] * y[neighborIdx];
+                }
+                
+                embeddingX.push(sumX);
+                embeddingY.push(sumY);
+            }
+            
+            return {x: embeddingX, y: embeddingY};
+        }
+
+        function runLLE() {
+            if (currentStep < 4) {
+                updateStep(currentStep + 1);
+                updatePlot();
+            } else {
+                generateData();
+            }
+        }
+
+        function toggleAnimation() {
+            if (isAnimating) {
+                cancelAnimationFrame(animationId);
+                isAnimating = false;
+                document.querySelector('button[onclick="toggleAnimation()"]').textContent = '애니메이션 시작';
+            } else {
+                isAnimating = true;
+                document.querySelector('button[onclick="toggleAnimation()"]').textContent = '애니메이션 중지';
+                animate();
+            }
+        }
+
+        function animate() {
+            if (!isAnimating) return;
+            
+            runLLE();
+            
+            animationId = requestAnimationFrame(() => {
+                setTimeout(animate, 2000);
+            });
+        }
+
+        // 이벤트 리스너
+        document.getElementById('nPoints').addEventListener('input', function() {
+            document.getElementById('nPointsValue').textContent = this.value;
+            generateData();
+        });
+
+        document.getElementById('kNeighbors').addEventListener('input', function() {
+            document.getElementById('kValue').textContent = this.value;
+            if (currentData) updatePlot();
+        });
+
+        document.getElementById('noiseLevel').addEventListener('input', function() {
+            document.getElementById('noiseValue').textContent = parseFloat(this.value).toFixed(2);
+            generateData();
+        });
+
+        // 초기 데이터 생성
+        generateData();
+    </script>
+</body>
+</html>

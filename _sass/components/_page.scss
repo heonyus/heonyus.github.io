@@ -12,6 +12,7 @@
 
     h1 {
         margin-bottom: 2.5rem; // 25px
+        margin-right: 320px; // 검색 바 공간 확보
         @include fs--heading-1;
         color: var(--text);
     }
@@ -20,6 +21,7 @@
         @include fs--title;
         font-weight: 700;
         margin-bottom: 2.5rem;
+        margin-right: 320px; // 검색 바 공간 확보
     }
 
     p {
@@ -72,6 +74,9 @@
     }
 
     @media (max-width: 768px) {
+        h1, .c-page__hero {
+            margin-right: 0; // 모바일에서는 여백 제거
+        }
         .c-header__top {
             position: static;
             justify-content: flex-end;

@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "A Vector Space Model for Automatic Indexing(1975)"
-date: 2022-06-15
+date: 2025-05-10
 category: NLP
 tags: [paper, embedding]
 ---

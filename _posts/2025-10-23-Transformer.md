@@ -27,14 +27,26 @@ tags: [Deep Learning, Transformer]
 ## 3. Model Architecture
 
 <div align="center">
-  <img src="https://i.imgur.com/hk7EBo5.png" alt="Model_Architecture_1" style="width:50%; min-width:240px; max-width:100%;">
+  <img src="https://i.imgur.com/hk7EBo5.png" alt="Model_Architecture_1" style="width:30%;">
 </div>
 
 ### 3.1 Encoder and Decoder Stacks
 
 <div align="center">
-  <img src="https://i.imgur.com/ZFdKMyV.png" alt="Model_Architecture_1" style="width:50%; min-width:240px; max-width:100%;">
+  <img src="https://i.imgur.com/ZFdKMyV.png" alt="Model_Architecture_1" style="width:20%;">
 </div>
 
 - Encoder
-  - encoder는 $N=6$인 동일한 layer stack으로 구성된다. 각 layer는 두개의 sub layer를 가진다.  
+  - encoder는 $N=6$인 동일한 layer stack으로 구성된다. 각 layer는 두 개의 sub layer를 가진다. 첫번째로는 **multi head self attention mechanism** 그리고 두번째는 **position-wise fully connected feed-forward network**이다. 이 두 sub layer에 대해서 **residual connection**을 적용하고 그 뒤에 **layer normalization**을 적용한다.
+  - 즉, $LayerNorm(x + Sublayer(x))$ 그리고 본 논문에서는 residual connection($x + Sublayer(x)$)을 이용하기 위해 두 tensor의 차원을 512로 맞춰준다.
+
+<div align="center">
+  <img src="https://i.imgur.com/UmXYniO.png" alt="Model_Architecture_1" style="width:20%;">
+</div>
+
+- Decoder
+  - decoder는 $N=6$인 동일한 layer stack으로 구성된다. min-width:240px; max-width:100%;">
+</div>
+
+- Decoder
+  - decoder 또한 $N=6$인 동일한 layer stack으로 구성된다. decoder는 각 encoder layer의 두 개의 sub layer 외에도 encoder stack의 output에 대해 multi head attention mechanism을 수행하는 세 번째 sub layer를 삽입한다.

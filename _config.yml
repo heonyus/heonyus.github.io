@@ -44,6 +44,8 @@ kramdown:
       line_numbers: false
   smart_quotes: ["apos", "apos", "quot", "quot"]
   typographic_symbols: { hellip: '...', mdash: '---', ndash: '--', laquo: '<<', raquo: '>>' }
+  # GFM specific options
+  gfm_quirks: []
 
 sass:
     sass_dir: _sass

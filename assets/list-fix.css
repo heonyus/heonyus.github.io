@@ -1,0 +1,66 @@
+/* Global list style fix */
+ul, ol {
+    margin-left: 40px !important;
+    padding-left: 0 !important;
+    list-style-position: outside !important;
+}
+
+ul {
+    list-style-type: disc !important;
+}
+
+ol {
+    list-style-type: decimal !important;
+}
+
+li {
+    display: list-item !important;
+    margin-left: 0 !important;
+}
+
+/* Nested lists */
+ul ul {
+    list-style-type: circle !important;
+}
+
+ul ul ul {
+    list-style-type: square !important;
+}
+
+ol ol {
+    list-style-type: lower-alpha !important;
+}
+
+ol ol ol {
+    list-style-type: lower-roman !important;
+}
+
+/* Force visibility */
+ul li::marker,
+ol li::marker {
+    color: inherit !important;
+    font-size: inherit !important;
+}
+
+/* Table styles */
+table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+    margin: 1em 0 !important;
+    border: 1px solid #ddd !important;
+}
+
+th, td {
+    border: 1px solid #ddd !important;
+    padding: 8px 12px !important;
+    text-align: left !important;
+}
+
+th {
+    background-color: #f5f5f5 !important;
+    font-weight: bold !important;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9 !important;
+}

@@ -11,6 +11,27 @@
     padding: 0;
 }
 
+/* Force list styles with maximum specificity */
+ul, ol {
+    list-style: initial !important;
+    list-style-position: outside !important;
+    margin-left: 40px !important;
+    padding-left: 20px !important;
+}
+
+ul {
+    list-style-type: disc !important;
+}
+
+ol {
+    list-style-type: decimal !important;
+}
+
+li {
+    display: list-item !important;
+    list-style: inherit !important;
+}
+
 *, *:before, *:after { box-sizing: inherit; }
 
 

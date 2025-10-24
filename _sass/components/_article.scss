@@ -139,7 +139,8 @@
 
     ul,
     ol {
-        margin-left: 2.1rem;
+        margin-left: 2.1rem !important;
+        padding-left: 2rem !important;
         
         // 리스트 내 수식 스타일
         li {
@@ -160,6 +161,42 @@
             &:has(.MathJax) {
                 overflow-x: auto;
                 word-wrap: break-word;
+            }
+        }
+    }
+    
+    ul {
+        list-style: disc outside !important;
+        
+        li {
+            list-style: inherit !important;
+            display: list-item !important;
+        }
+        
+        ul {
+            list-style: circle outside !important;
+            
+            ul {
+                list-style: square outside !important;
+            }
+        }
+    }
+    
+    ol {
+        list-style: decimal outside !important;
+        counter-reset: item;
+        
+        li {
+            list-style: inherit !important;
+            display: list-item !important;
+            counter-increment: item;
+        }
+        
+        ol {
+            list-style: lower-alpha outside !important;
+            
+            ol {
+                list-style: lower-roman outside !important;
             }
         }
     }

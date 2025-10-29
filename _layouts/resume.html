@@ -1,0 +1,160 @@
+---
+layout: default
+---
+<div class="resume">
+  <aside class="resume__sidebar">
+    <div class="resume__photo">
+      <img src="{{ site.profile_image | default: '/assets/images/profile.jpg' }}" alt="{{ page.name | default: site.author }}">
+    </div>
+    <div class="resume__identity">
+      <h1 class="resume__name">{{ page.name }}</h1>
+      <p class="resume__title">{{ page.tagline }}</p>
+    </div>
+    {% if page.contact %}
+    <dl class="resume__contact">
+      {% for item in page.contact %}
+      <div class="resume__contact-item">
+        <dt>{{ item.label }}</dt>
+        <dd>
+          {% if item.url %}
+          <a href="{{ item.url }}">{{ item.text }}</a>
+          {% else %}
+          {{ item.text }}
+          {% endif %}
+        </dd>
+      </div>
+      {% endfor %}
+    </dl>
+    {% endif %}
+    {% if page.extras %}
+    <dl class="resume__details">
+      {% for detail in page.extras %}
+      <div class="resume__details-item">
+        <dt>{{ detail.label }}</dt>
+        <dd>{{ detail.value }}</dd>
+      </div>
+      {% endfor %}
+    </dl>
+    {% endif %}
+  </aside>
+
+  <section class="resume__main">
+    {% if page.about %}
+    <section class="resume__section" id="about">
+      <h2 class="resume__section-title">About Me</h2>
+      <div class="resume__section-body">
+        {{ page.about | markdownify }}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if page.education %}
+    <section class="resume__section" id="education">
+      <h2 class="resume__section-title">Education</h2>
+      <div class="resume__section-body">
+        {% for edu in page.education %}
+        <article class="resume__item">
+          <header class="resume__item-header">
+            <span class="resume__item-period">{{ edu.period }}</span>
+            <div>
+              <h3 class="resume__item-title">{{ edu.degree }}</h3>
+              <p class="resume__item-subtitle">{{ edu.institution }}{% if edu.location %}, {{ edu.location }}{% endif %}</p>
+            </div>
+          </header>
+          {% if edu.details %}
+          <p class="resume__item-description">{{ edu.details | markdownify | strip }}</p>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if page.research %}
+    <section class="resume__section" id="research">
+      <h2 class="resume__section-title">Research Experience</h2>
+      <div class="resume__section-body">
+        {% for experience in page.research %}
+        <article class="resume__item">
+          <header class="resume__item-header">
+            <span class="resume__item-period">{{ experience.period }}</span>
+            <div>
+              <h3 class="resume__item-title">{{ experience.role }}</h3>
+              <p class="resume__item-subtitle">{{ experience.org }}{% if experience.location %}, {{ experience.location }}{% endif %}</p>
+            </div>
+          </header>
+          {% if experience.summary %}
+          <p class="resume__item-description">{{ experience.summary }}</p>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if page.projects %}
+    <section class="resume__section" id="projects">
+      <h2 class="resume__section-title">Projects</h2>
+      <div class="resume__section-body">
+        {% for project in page.projects %}
+        <article class="resume__item">
+          <header class="resume__item-header">
+            <span class="resume__item-period">{{ project.period }}</span>
+            <div>
+              <h3 class="resume__item-title">{{ project.name }}</h3>
+              <p class="resume__item-subtitle">{{ project.org }}</p>
+            </div>
+          </header>
+          {% if project.summary %}
+          <p class="resume__item-description">{{ project.summary }}</p>
+          {% endif %}
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if page.awards %}
+    <section class="resume__section" id="awards">
+      <h2 class="resume__section-title">Awards</h2>
+      <div class="resume__section-body resume__section-body--list">
+        <ul class="resume__list">
+          {% for award in page.awards %}
+          <li class="resume__list-item">
+            <span class="resume__list-period">{{ award.period }}</span>
+            <span class="resume__list-content">{{ award.title }}</span>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
+
+    {% if page.skills %}
+    <section class="resume__section" id="skills">
+      <h2 class="resume__section-title">Skills</h2>
+      <div class="resume__section-body resume__section-body--grid">
+        {% for skill in page.skills %}
+        <div class="resume__skill">
+          <h3 class="resume__skill-title">{{ skill.category }}</h3>
+          <p class="resume__skill-list">{{ skill.items }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    {% if page.additional %}
+    <section class="resume__section" id="additional">
+      <h2 class="resume__section-title">Additional Information</h2>
+      <div class="resume__section-body">
+        <ul class="resume__list resume__list--plain">
+          {% for info in page.additional %}
+          <li><strong>{{ info.label }}:</strong> {{ info.value }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+    {% endif %}
+  </section>
+</div>

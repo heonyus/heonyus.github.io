@@ -1,32 +1,132 @@
 ---
-layout: page
-title: Home
+layout: resume
+title: Resume
+name: "JaeHeon Jung"
+tagline: "B.S. Student in Industrial and Management Engineering"
+contact:
+  - label: Location
+    text: "Seoul, Korea"
+  - label: Phone
+    text: "+82 010 3135 7849"
+    url: "tel:+821031357849"
+  - label: Email
+    text: "lhe339@naver.com"
+    url: "mailto:lhe339@naver.com"
+  - label: GitHub
+    text: "heonyus"
+    url: "https://github.com/heonyus"
+  - label: Website
+    text: "heonyus.xyz"
+    url: "https://heonyus.xyz"
+extras:
+  - label: Nationality
+    value: "Korean"
+  - label: Birth Year
+    value: "1999"
+  - label: Specialization
+    value: "MLOps, NLP"
+  - label: Languages
+    value: "Korean (Native), English (Intermediate)"
+  - label: English Test
+    value: "TOEIC Speaking (IH, Intermediate High)"
+about: >
+  Exploring human essence and creating <em>&Uuml;bermensch</em> through AI.
+education:
+  - period: "2024"
+    degree: "B.S. in Industrial and Management Engineering"
+    institution: "Myongji University"
+    location: "Yongin, Korea"
+    details: "GPA: 3.8/4.5, <strong>Summa Cum Laude</strong>"
+research:
+  - period: "2023&ndash;2024"
+    role: "MLOps Engineer"
+    org: "Lingora AI Innovation Team"
+    location: "Korea"
+    summary: "Responsible for MLOps and AI research initiatives."
+  - period: "2023&ndash;2024"
+    role: "Researcher"
+    org: "Operations Support Dept., FOM Club, Myongji University"
+    location: "Korea"
+    summary: "Led projects and supported data science initiatives."
+  - period: "2023"
+    role: "President"
+    org: "Data Science Club 'FoM', Myongji University"
+    location: "Korea"
+    summary: "Founded and led the club to foster data science research and collaboration."
+  - period: "2023"
+    role: "Research Intern"
+    org: "AI Innovation, Tutoring"
+    location: "Korea"
+    summary: "Worked on prompt engineering and AI research for tutoring systems."
+  - period: "2022&ndash;2023"
+    role: "Research Intern"
+    org: "Computational Data Science Lab, Myongji University"
+    location: "Korea"
+    summary: "Conducted research and engineering tasks in data science."
+projects:
+  - period: "2024"
+    name: "Open-end Chat Modifier Model Development and Deployment"
+    org: "Market Designers, Korea"
+    summary: "Modifies AI chat outputs to generate context-aware follow-up questions."
+  - period: "2023"
+    name: "Development of National Assembly Bill Proposal System Using Existing Legislation"
+    org: "National Assembly of South Korea, Korea"
+    summary: "Assists in proposing bills by utilizing existing legislation."
+  - period: "2023"
+    name: "Entity Recognition Search Model Development &amp; LLMOps Engineering System"
+    org: "Market Designers, Korea"
+    summary: "Evaluates and recommends words based on learner input using cosine similarity."
+  - period: "2023"
+    name: "Development of Dynamic Prompting that Changes System Messages Based on Textbook Topics"
+    org: "Market Designers, Korea"
+    summary: "Adjusts system messages dynamically based on textbook topics."
+  - period: "2023"
+    name: "Development of Personal Knowledge Model to Understand Learner's Persona"
+    org: "Market Designers, Korea"
+    summary: "Extracts and manages personal knowledge for personalized AI tutoring."
+  - period: "2023"
+    name: "Development of Error Correction Model to Revise Learner's Incorrect Utterances"
+    org: "Market Designers, Korea"
+    summary: "Revises learners' incorrect utterances using an error correction model."
+  - period: "2023"
+    name: "Travel Itinerary Scheduling Using Reinforcement Learning and NLP"
+    org: "Myongji University, Korea"
+    summary: "Schedules travel itineraries by combining reinforcement learning and NLP techniques."
+  - period: "2023"
+    name: "Development of DX-ASTI Demand-based Service Model Recommendation System"
+    org: "KISTI, Korea"
+    summary: "Recommends services by extracting tailored keywords with pre-trained models."
+  - period: "2023"
+    name: "Development of Heterogeneous Domain Integrated Graph Neural Network for Topic Tomography"
+    org: "National Research Foundation of Korea"
+    summary: "Identifies topics and keywords across documents using a RAG-based approach."
+  - period: "2022"
+    name: "Reinforcement Learning Model for Power Generation Fuel Consumption Optimization"
+    org: "Bistelligence, Korea"
+    summary: "Optimizes fuel consumption and reduces costs through reinforcement learning solutions."
+awards:
+  - period: "2024"
+    title: "<strong>Summa Cum Laude in Industrial Management Engineering</strong>, Myongji University"
+  - period: "2024"
+    title: "<strong>National Assembly Public Data Competition</strong> &mdash; Commendation Award"
+  - period: "2024"
+    title: "<strong>Myongji University On-site Training Review Competition</strong> &mdash; Grand Prize"
+  - period: "2023"
+    title: "<strong>Myongji University Data Science Club 'FoM'</strong> &mdash; Step 2 Completion"
+  - period: "2023"
+    title: "<strong>Myongji University Capstone Design Graduation Project</strong> &mdash; Grand Prize"
+  - period: "2022"
+    title: "<strong>Myongji University Data Analytics TA Social Advancement Scholarship</strong>"
+  - period: "2022"
+    title: "<strong>Myongji University Data Analytics Competition</strong> &mdash; Excellence Award"
+  - period: "2022"
+    title: "<strong>Myongji University Learning Community Scholarship</strong>"
+skills:
+  - category: "Programming"
+    items: "Python, PyTorch, TensorFlow, AWS, Next.js"
+  - category: "Others"
+    items: "Git, GitHub, Web Development, Database Management"
+additional:
+  - label: "Military Service"
+    value: "Auxiliary Policeman, Seoul Metropolitan Police Agency, 3rd Mobile Unit (2020.04&ndash;2021.10)"
 ---
-<section class="c-archives">
-  <link rel="shortcut icon" href="">
-  {% for post in site.posts  %}
-  {% capture this_year %}{{ post.date | date: "%Y" }}{% endcapture %}
-  {% capture next_year %}{{ post.previous.date | date: "%Y" }}{% endcapture %}
-  {% if forloop.first %}
-  <h2 class="c-archives__year" id="{{ this_year }}-ref">{{this_year}}</h2>
-  <ul class="c-archives__list">
-    {% endif %}
-    <li class="c-archives__item">
-      <h3>
-        <a href="{{ post.url | prepend: site.baseurl }}">{{post.title}}</a>
-        <br>
-        <small>{{post.description}}</small>
-      </h3>
-      <p>{{ post.date | date: "%b %-d, %Y" }}</p>
-    </li>
-    {% if forloop.last %}
-  </ul>
-  {% else %}
-  {% if this_year != next_year %}
-</ul>
-<h2 class="c-archives__year" id="{{ next_year }}-ref">{{next_year}}</h2>
-<ul class="c-archives__list">
-  {% endif %}
-  {% endif %}
-  {% endfor %}
-</section>

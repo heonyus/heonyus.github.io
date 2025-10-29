@@ -1,18 +1,12 @@
 <header class="c-page__header">
   <div class="c-header__top">
-    <form class="c-search" action="{{ "/search/" | prepend: site.baseurl }}" method="get" role="search">
-      <input type="search" name="q" id="site-search" placeholder="Search..." aria-label="Search">
-    </form>
-    <button type="button" class="theme-toggle" id="theme-btn" aria-label="Toggle theme">☀️</button>
+    <nav class="c-header__nav">
+      <a href="{{ "/" | prepend: site.baseurl }}">Home</a>
+    </nav>
+    <button type="button" class="theme-toggle" id="theme-btn" aria-label="Toggle theme">Toggle theme</button>
   </div>
-  {% if page.title != 'Home' %}
-  <h1>{{ site.title}}</h1>
+  <h1>{{ page.title | default: site.title }}</h1>
+  {% if page.description %}
+  <p class="c-page__subtitle">{{ page.description }}</p>
   {% endif %}
-  {% if page.title == 'Home' %}
-  <h1 class="c-page__hero">{{ site.description }}</h1>
-  {% endif %}
-  <p>
-    <a href="{{ "/" | prepend: site.baseurl }}">Home</a><span
-          class="u-separate"></span> <a href="{{ "/about/" | prepend: site.baseurl }}">About</a><span class="u-separate"></span><a href="{{ "/categories/" | prepend: site.baseurl }}">Categories</a><span class="u-separate"></span><a href="{{ "/tags/" | prepend: site.baseurl }}">Tags</a>
-  </p>
 </header>

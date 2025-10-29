@@ -1,17 +1,17 @@
 # Site settings
-title: "Jaeh's Blog"
-description: > 
-  Artificial Übermensch
+title: "JaeHeon Jung"
+description: >
+  Resume
 
-author: Jung Jae Heon
-email: heonyus@gmail.com
+author: JaeHeon Jung
+email: lhe339@naver.com
 twitter_username: 
 github_username: heonyus
 
 # Profile Information
 profile_image: /assets/images/profile.jpg
 location: Seoul, Republic of Korea
-linkedin: honey-jeong-560ab3294
+linkedin: honey-Jung-560ab3294
 instagram: ho.en.y
 followers: 19
 following: 19
@@ -60,4 +60,3 @@ exclude:
   - Gemfile.lock
   - Rakefile
   - README.md
-

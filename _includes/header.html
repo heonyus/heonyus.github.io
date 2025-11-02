@@ -1,8 +1,6 @@
 <header class="c-page__header">
   <div class="c-header__top">
-    <nav class="c-header__nav">
-      <a href="{{ "/" | prepend: site.baseurl }}">Home</a>
-    </nav>
+    {% include site-nav.html %}
     <button type="button" class="theme-toggle" id="theme-btn" aria-label="Toggle theme">Toggle theme</button>
   </div>
   <h1>{{ page.title | default: site.title }}</h1>

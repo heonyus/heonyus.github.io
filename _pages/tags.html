@@ -1,0 +1,44 @@
+---
+layout: content
+title: Tags
+permalink: /tags/
+hide_title: true
+---
+
+{% assign all_tags = site.tags | sort %}
+
+<section class="c-archives">
+  {% if all_tags and all_tags != empty %}
+    {% for tag in all_tags %}
+    {% assign tag_name = tag[0] %}
+    {% assign posts = tag[1] %}
+    {% assign slug = tag_name | slugify %}
+
+    <details class="tag-accordion" id="{{ slug }}">
+      <summary class="tag-accordion__summary" aria-controls="panel-{{ slug }}" aria-expanded="false">
+        <span class="tag-accordion__title">#{{ tag_name }}</span>
+        <span class="tag-accordion__meta"><span class="tag-accordion__count">{{ posts | size }}</span>개의 글</span>
+      </summary>
+      <div class="tag-accordion__panel" id="panel-{{ slug }}">
+        <div class="c-archives__list">
+          {% for post in posts %}
+          <article class="c-archives__item">
+            <time class="c-archives__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+            <div class="c-archives__details">
+              <h3 class="c-archives__title"><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+              {% if post.description %}
+              <p class="c-archives__excerpt">{{ post.description }}</p>
+              {% elsif post.excerpt %}
+              <p class="c-archives__excerpt">{{ post.excerpt | strip_html | strip_newlines | truncate: 140 }}</p>
+              {% endif %}
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+    </details>
+    {% endfor %}
+  {% else %}
+  <p class="c-archives__empty">아직 등록된 태그가 없습니다.</p>
+  {% endif %}
+</section>

@@ -110,6 +110,16 @@
     border-radius: 4px;
     transition: all 0.2s ease;
     line-height: 1.4;
+    white-space: normal;
+    
+    .c-toc__num {
+        display: inline-block;
+        min-width: 3.2rem; // 공간 확보 (예: 1.10)
+        margin-right: 0.6rem;
+        color: var(--text);
+        font-variant-numeric: tabular-nums;
+        opacity: 0.8;
+    }
     
     &:hover {
         color: var(--link);
@@ -122,6 +132,8 @@
         font-weight: 500;
         border-left: 3px solid var(--link);
         padding-left: 1.3rem;
+
+        .c-toc__num { color: var(--link); }
     }
 }
 

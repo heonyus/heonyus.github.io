@@ -2,6 +2,10 @@
 layout: default
 ---
 {% assign resume_name = page.full_name | default: page.resume_name | default: page.display_name | default: page.title | default: site.author | default: site.title %}
+<div class="resume__nav">
+  {% include site-nav.html %}
+  <button type="button" class="theme-toggle" id="theme-btn" aria-label="Toggle theme">Toggle theme</button>
+</div>
 <div class="resume">
   <aside class="resume__sidebar">
     <div class="resume__photo">

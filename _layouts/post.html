@@ -8,13 +8,18 @@ layout: page
       <p class="c-article__time"><time datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ page.date | date: "%b %-d, %Y" }}</time></p>
     </header>
     <!-- Post Tags -->
-    <ul class="c-tags">
+    {% if page.tags and page.tags != empty %}
+    <div class="c-tag-list c-tag-list--post">
       {% for tag in page.tags %}
-      <li class="c-tag"><a href="{{ "/tags/" | prepend: site.baseurl }}{{ tag | url_encode }}/">{{ tag }}</a></li>
+      {% assign slug = tag | slugify %}
+      <a class="c-tag c-tag--inline" href="{{ '/tags/#' | append: slug | relative_url }}">#{{ tag }}</a>
       {% endfor %}
-    </ul>
+    </div>
+    {% endif %}
     <div class="c-article__main">
-      {{ content }}
+      <div class="post-content">
+        {{ content }}
+      </div>
     </div>
   <!-- Previous / Next Buttons -->
   <div class="pagenav">

@@ -7,7 +7,10 @@
     </main>
     <footer class="site-footer">
       <div class="u-container">
-        <p>© {{ 'now' | date: '%Y' }} heonyus. All rights reserved.</p>
+        <p>© <span id="current-year"></span> heonyus. All rights reserved.</p>
+        <script>
+          document.getElementById('current-year').textContent = new Date().getFullYear();
+        </script>
       </div>
     </footer>
     {% if jekyll.environment == 'production' %}

@@ -1,0 +1,39 @@
+---
+layout: page
+title: Blog
+permalink: /blog/
+description: "연구와 개발 메모를 아카이브하는 공간"
+---
+
+<section class="c-archives">
+
+  {% if site.posts and site.posts != empty %}
+  <div class="c-archives__list">
+    {% for post in site.posts %}
+    <article class="c-archives__item">
+      <time class="c-archives__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
+      <div class="c-archives__details">
+        <h3 class="c-archives__title">
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </h3>
+        {% if post.description %}
+        <p class="c-archives__excerpt">{{ post.description }}</p>
+        {% elsif post.excerpt %}
+        <p class="c-archives__excerpt">{{ post.excerpt | strip_html | strip_newlines | truncate: 140 }}</p>
+        {% endif %}
+        {% if post.tags %}
+        <div class="c-tag-list c-tag-list--post">
+          {% for tag in post.tags %}
+          {% assign slug = tag | slugify %}
+          <a class="c-tag c-tag--inline" href="{{ '/tags/#' | append: slug | relative_url }}">#{{ tag }}</a>
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="c-archives__empty">작성된 글이 없습니다. 곧 새로운 글이 올라올 예정입니다.</p>
+  {% endif %}
+</section>

@@ -37,6 +37,12 @@
     min-width: 0;
 }
 
+.c-article__subtitle {
+    @include fs--body;
+    color: var(--muted);
+    margin-top: 0.8rem;
+}
+
 .c-article__time {
     @include fs--body;
     color: var(--muted);
@@ -48,10 +54,10 @@
     margin-bottom: 5rem; // 50px
     @include fs--body;
     color: var(--text);
-    line-height: 2.0; // 행간 더 증가
+    line-height: 1.8; // 기본 행간 약간 축소
 
     > * {
-        margin-bottom: 3rem; // 24px -> 30px
+        margin-bottom: 2.4rem; // 섹션 간 여백 소폭 축소
     }
 
     h1 {
@@ -59,7 +65,9 @@
         color: var(--link) !important;
         padding-bottom: 0.8rem;
         border-bottom: 3px solid var(--link) !important;
-        display: inline-block; // underline only as wide as text
+        display: block;
+        width: fit-content; // underline only as wide as text while staying block-level
+        max-width: 100%;
         margin-top: 3.5rem !important;
         margin-bottom: 2.5rem !important;
     }
@@ -69,7 +77,9 @@
         color: var(--link) !important;
         padding-bottom: 0.6rem;
         border-bottom: 2px solid var(--link) !important;
-        display: block; // 각 헤더가 별도 줄을 차지하도록 수정
+        display: block;
+        width: fit-content; // underline only as wide as text while staying block-level
+        max-width: 100%;
         margin-top: 3rem !important;
         margin-bottom: 2.5rem !important;
     }
@@ -79,7 +89,9 @@
         color: var(--link) !important;
         padding-bottom: 0.4rem;
         border-bottom: 1px solid var(--link) !important;
-        display: block; // 각 헤더가 별도 줄을 차지하도록 수정
+        display: block;
+        width: fit-content; // underline only as wide as text while staying block-level
+        max-width: 100%;
         margin-top: 2.5rem !important;
         margin-bottom: 1.5rem !important;
     }
@@ -104,8 +116,8 @@
     }
     
     p {
-        line-height: 2.1;
-        margin-bottom: 2rem;
+        line-height: 1.9; // 문단 행간 소폭 축소
+        margin-bottom: 1.4rem; // 문단 간격 축소
     }
     
     li {
@@ -130,6 +142,31 @@
         border-radius: 4px;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         background: transparent;
+    }
+
+    /* Link hover fill effect only for post content */
+    .post-content a {
+        position: relative;
+        display: inline-block;
+        padding: 0 1px;
+        transition: color 0.3s ease;
+
+        &::after {
+            content: '';
+            position: absolute;
+            z-index: -1;
+            width: 100%;
+            height: 0%;
+            left: 0;
+            bottom: 0;
+            background-color: $c-accent__blue;
+            transition: height 0.3s ease;
+        }
+
+        &:hover {
+            color: white;
+            &::after { height: 100%; }
+        }
     }
 
     blockquote {

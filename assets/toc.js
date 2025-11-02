@@ -26,21 +26,56 @@
     }
   });
 
-  // TOC 항목 생성
+  // 베이스 레벨(문서에서 처음 등장하는 헤딩의 깊이)을 계산해
+  // 거기에 상대적인 번호를 매깁니다. (예: 첫 헤딩이 h2여도 1부터 시작)
+  // 문서 내 최소 헤딩 레벨을 베이스로 사용 (예: H1 있으면 1, 없고 H2만 있으면 2)
+  const firstLevel = headings.length
+    ? Array.from(headings).reduce((min, h) => Math.min(min, parseInt(h.tagName.substring(1), 10)), 6)
+    : 1;
+
+  // 계층 번호 카운터 (1~6 사용)
+  const counters = [0, 0, 0, 0, 0, 0, 0];
+  let prevRel = 0;
+
+  function nextNumber(rawLevel) {
+    // 상대 레벨 (첫 헤딩이 h2면 h2는 1레벨, h3는 2레벨)
+    let rel = Math.max(1, rawLevel - firstLevel + 1);
+
+    // 더 깊게 점프할 경우(예: 1에서 바로 3) 중간 레벨을 1로 채움
+    if (rel > prevRel + 1) {
+      for (let l = prevRel + 1; l < rel; l++) counters[l] = counters[l] || 1;
+      counters[rel] = 1;
+    } else if (rel === prevRel + 1) {
+      counters[rel] = 1;
+    } else {
+      counters[rel] = (counters[rel] || 0) + 1;
+    }
+
+    // 더 깊은 레벨 초기화
+    for (let l = rel + 1; l < counters.length; l++) counters[l] = 0;
+
+    prevRel = rel;
+    return counters.slice(1, rel + 1).filter(n => n > 0).join('.');
+  }
+
+  // TOC 항목 생성 (번호 접두사 포함)
   let tocHTML = '';
   headings.forEach((heading) => {
+    const rawLevel = parseInt(heading.tagName.substring(1), 10);
     const level = heading.tagName.toLowerCase();
     const text = heading.textContent;
     const id = heading.id;
-    
+
     let levelClass = '';
     if (level === 'h1') levelClass = 'c-toc__item--h1';
     else if (level === 'h2') levelClass = 'c-toc__item--h2';
     else if (level === 'h3') levelClass = 'c-toc__item--h3';
     else if (level === 'h4') levelClass = 'c-toc__item--h4';
-    
+
+    const number = nextNumber(rawLevel);
+
     tocHTML += `<li class="c-toc__item ${levelClass}">
-      <a href="#${id}" class="c-toc__link">${text}</a>
+      <a href="#${id}" class="c-toc__link"><span class="c-toc__num">${number}</span> ${text}</a>
     </li>`;
   });
 

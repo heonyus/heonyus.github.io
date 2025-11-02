@@ -5,6 +5,11 @@
     <main class="u-container">
       {{ content }}
     </main>
+    <footer class="site-footer">
+      <div class="u-container">
+        <p>© {{ 'now' | date: '%Y' }} heonyus. All rights reserved.</p>
+      </div>
+    </footer>
     {% if jekyll.environment == 'production' %}
     {% include analytics.html %}
     {% endif %}

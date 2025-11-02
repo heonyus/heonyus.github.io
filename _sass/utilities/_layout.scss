@@ -9,6 +9,7 @@
     padding-top: 10rem; // 100px
     padding-right: 1rem; // 10px
     padding-left: 1rem; // 10px
+    padding-bottom: 3.5rem; // modest bottom space, less empty area
 }
 
 /* Global theme application */
@@ -55,5 +56,20 @@ hr, .pagenav, .wrapper, .c-archives__item, .c-toc__nav {
   body { background: #ffffff !important; color: #000000 !important; }
   .u-container { max-width: none; padding-top: 0; }
   .c-header__top, .theme-toggle { display: none !important; }
+}
+
+/* Site footer */
+.site-footer {
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 1.4rem;
+  padding: 1.2rem 1rem; /* symmetric, compact */
+  text-align: center;
+}
+
+/* Remove the large top/bottom padding from the inner container used in footer */
+.site-footer .u-container {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 

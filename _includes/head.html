@@ -4,7 +4,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% if page.title %}{{ page.title }} - {% endif %}{{ site.title }}</title>
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
-  <link href='https://fonts.googleapis.com/css?family=Roboto+Mono|Roboto:300,400,900,400italic' rel='stylesheet' type='text/css'>
+  <!-- Web fonts: Pretendard for KR/EN clean reading -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/pretendard@1.3.9/dist/web/static/pretendard.css" rel="stylesheet">
+  <!-- Optional mono for code when needed -->
+  <link href='https://fonts.googleapis.com/css?family=Roboto+Mono' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
   <link rel="stylesheet" href="{{ "/assets/list-fix.css" | prepend: site.baseurl }}">
   <script defer src="{{ "/assets/theme.js" | prepend: site.baseurl }}"></script>

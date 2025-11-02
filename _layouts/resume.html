@@ -1,13 +1,14 @@
 ---
 layout: default
 ---
+{% assign resume_name = page.full_name | default: page.resume_name | default: page.display_name | default: page.title | default: site.author | default: site.title %}
 <div class="resume">
   <aside class="resume__sidebar">
     <div class="resume__photo">
-      <img src="{{ site.profile_image | default: '/assets/images/profile.jpg' }}" alt="{{ page.name | default: site.author }}">
+      <img src="{{ site.profile_image | default: '/assets/images/profile.jpg' }}" alt="{{ resume_name }}">
     </div>
     <div class="resume__identity">
-      <h1 class="resume__name">{{ page.name }}</h1>
+      <h1 class="resume__name">{{ resume_name }}</h1>
       <p class="resume__title">{{ page.tagline }}</p>
     </div>
     {% if page.contact %}

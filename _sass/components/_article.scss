@@ -116,8 +116,14 @@
     }
     
     p {
-        line-height: 1.9; // 문단 행간 소폭 축소
-        margin-bottom: 1.4rem; // 문단 간격 축소
+        line-height: 1.4; 
+        margin-bottom: 2.5rem; 
+    }
+    
+    // 문단 바로 뒤에 오는 리스트도 불릿이 표시되도록
+    p + ul,
+    p + ol {
+        margin-top: -1rem; // 문단과 리스트 간 간격 조정
     }
     
     li {

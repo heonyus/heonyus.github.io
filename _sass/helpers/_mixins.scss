@@ -16,9 +16,8 @@
 
 // Font families
 @mixin ff--sans-serif($font-weight: normal) {
-    font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-      Roboto, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic',
-      'Helvetica Neue', Arial, sans-serif;
+    font-family: 'BookkMyungjo', 'Apple SD Gothic Neo', 'Malgun Gothic',
+      'Nanum Gothic', 'Noto Sans KR', serif;
     font-weight: $font-weight;
 }
 

@@ -63,6 +63,16 @@ module MdSpacing
         end
       end
 
+      # ensure list items start a fresh block (so they parse as lists even
+      # when immediately following a paragraph without a blank line)
+      # Matches: - item, * item, 1. item, etc.
+      if line =~ /^\s*[-*+]\s+/ || line =~ /^\s*\d+\.\s+/
+        # if the previous emitted line isn't blank and isn't a list item, insert a blank
+        if new_lines.any? && new_lines.last !~ /^\s*$/ && new_lines.last !~ /^\s*[-*+]\s+/ && new_lines.last !~ /^\s*\d+\.\s+/
+          new_lines << ""
+        end
+      end
+
       new_lines << line
     end
 

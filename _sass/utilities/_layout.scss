@@ -3,7 +3,7 @@
    ========================================================================== */
 
 .u-container {
-    max-width: 110rem; // widen container
+    max-width: 120rem; // widen container slightly to reduce overly compact look
     margin-right: auto;
     margin-left: auto;
     padding-top: 10rem; // 100px
@@ -15,6 +15,8 @@
 body {
     background: var(--bg);
     color: var(--text);
+    font-size: 1.6rem; // ensure default text ~16px (html set to 62.5%)
+    line-height: 1.6;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
 }

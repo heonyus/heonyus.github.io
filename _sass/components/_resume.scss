@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
   gap: 3.5rem;
-  font-size: 1.6rem; // increase resume type scale for readability
+  font-size: 1.7rem; // slight bump so resume doesn’t look mini on desktop
 
   @media (max-width: 62rem) {
     grid-template-columns: 1fr;

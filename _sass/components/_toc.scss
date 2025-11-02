@@ -64,9 +64,19 @@
 }
 
 .c-toc__list {
-    list-style: none;
+    list-style: none !important;
     margin: 0;
     padding: 0;
+    
+    li {
+        list-style: none !important;
+        &::before {
+            content: none !important;
+        }
+        &::marker {
+            display: none !important;
+        }
+    }
 }
 
 .c-toc__item {
@@ -79,61 +89,150 @@
         &:first-child {
             margin-top: 0;
         }
+        
+        .c-toc__link {
+            padding-left: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .c-toc__link {
+            .c-toc__num {
+                font-weight: 700 !important;
+                font-size: 1.5rem !important;
+            }
+        }
     }
     
     &--h2 {
         margin-top: 1rem;
-        margin-left: 0.5rem;
+        padding-left: 1.8rem;
         
         &:first-child {
             margin-top: 0;
         }
+        
+        .c-toc__link {
+            padding-left: 0;
+            font-size: 1.4rem;
+            font-weight: 500;
+        }
+        
+        .c-toc__link {
+            .c-toc__num {
+                font-weight: 600 !important;
+                font-size: 1.4rem !important;
+            }
+        }
     }
     
     &--h3 {
-        margin-left: 2rem;
+        padding-left: 3.6rem;
         margin-top: 0.5rem;
+        
+        .c-toc__link {
+            padding-left: 0;
+            font-size: 1.3rem;
+            font-weight: 400;
+        }
+        
+        .c-toc__link {
+            .c-toc__num {
+                font-weight: 500 !important;
+                font-size: 1.3rem !important;
+            }
+        }
     }
     
     &--h4 {
-        margin-left: 3.5rem;
+        padding-left: 5.4rem;
         margin-top: 0.3rem;
+        
+        .c-toc__link {
+            padding-left: 0;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+        
+        .c-toc__link {
+            .c-toc__num {
+                font-weight: 500 !important;
+                font-size: 1.2rem !important;
+            }
+        }
     }
 }
 
 .c-toc__link {
     display: block;
     padding: 0.5rem 0.8rem;
+    padding-right: 0.8rem;
     font-size: 1.4rem;
     color: var(--muted);
     text-decoration: none;
     border-radius: 4px;
     transition: all 0.2s ease;
-    line-height: 1.4;
+    line-height: 1.5;
     white-space: normal;
     
     .c-toc__num {
-        display: inline-block;
-        min-width: 3.2rem; // 공간 확보 (예: 1.10)
-        margin-right: 0.6rem;
-        color: var(--text);
+        // 강제 표시 속성 - 다른 CSS 규칙과의 충돌 방지
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        
+        // 크기 및 공간
+        min-width: 4rem !important; // 공간 확보 (예: 1.10.5)
+        width: auto !important;
+        height: auto !important;
+        margin-right: 0.8rem !important;
+        padding: 0 !important;
+        
+        // 텍스트 스타일
+        font-size: 1.4rem !important; // 기본 크기 (레벨별로 오버라이드됨)
+        font-weight: 600 !important;
         font-variant-numeric: tabular-nums;
-        opacity: 0.8;
+        text-align: left !important;
+        text-decoration: none !important;
+        text-transform: none !important;
+        letter-spacing: normal !important;
+        line-height: inherit !important;
+        
+        // 색상
+        color: var(--text) !important;
+        background: transparent !important;
+        
+        // 레이아웃
+        position: static !important;
+        float: none !important;
+        overflow: visible !important;
+        clip: auto !important;
+        white-space: normal !important;
+        
+        // 기타
+        content: none !important; // 가상 요소 내용 제거
+        pointer-events: auto !important;
     }
     
     &:hover {
         color: var(--link);
         background: var(--pagenav-hover-bg);
+        
+        .c-toc__num {
+            color: var(--link);
+            opacity: 1;
+        }
     }
     
     &.active {
         color: var(--link);
         background: var(--pagenav-hover-bg);
-        font-weight: 500;
-        border-left: 3px solid var(--link);
-        padding-left: 1.3rem;
 
-        .c-toc__num { color: var(--link); }
+        .c-toc__num { 
+            color: var(--link) !important;
+            opacity: 1 !important;
+            font-weight: 700;
+        }
     }
 }
 

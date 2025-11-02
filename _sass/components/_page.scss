@@ -88,6 +88,7 @@
 .c-page__header {
   margin-bottom: 6rem;
   position: relative;
+  min-height: 5rem; // 포스트 페이지에서 네비게이션을 위한 최소 높이
 
   h1 {
     margin-bottom: 2rem;
@@ -107,6 +108,12 @@
     display: flex;
     align-items: center;
     gap: 1.2rem;
+    z-index: 10; // 네비게이션이 다른 요소 위에 표시되도록
+  }
+
+  // 포스트 페이지에서 제목이 없을 때도 네비게이션이 보이도록
+  &:has(.c-header__top):not(:has(h1)) {
+    min-height: 5rem;
   }
 
   @media (max-width: 768px) {

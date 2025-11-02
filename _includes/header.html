@@ -3,8 +3,10 @@
     {% include site-nav.html %}
     <button type="button" class="theme-toggle" id="theme-btn" aria-label="Toggle theme">Toggle theme</button>
   </div>
+  {% unless page.layout == 'post' %}
   <h1>{{ page.title | default: site.title }}</h1>
   {% if page.description %}
   <p class="c-page__subtitle">{{ page.description }}</p>
   {% endif %}
+  {% endunless %}
 </header>

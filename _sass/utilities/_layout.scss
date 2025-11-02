@@ -50,3 +50,10 @@ hr, .pagenav, .wrapper, .c-archives__item, .c-toc__nav {
   }
 }
 
+/* Print base: white page, black text, relaxed width */
+@media print {
+  body { background: #ffffff !important; color: #000000 !important; }
+  .u-container { max-width: none; padding-top: 0; }
+  .c-header__top, .theme-toggle { display: none !important; }
+}
+

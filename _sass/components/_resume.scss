@@ -45,7 +45,7 @@
     text-align: center;
 
     .resume__name {
-      font-size: 2.2em;
+      font-size: 2.4em;
       font-weight: 700;
       letter-spacing: 0.02em;
       margin-bottom: 0.25rem;
@@ -105,11 +105,17 @@
   }
 
   &__section-title {
-    font-size: 1.3em;
+    font-size: 1.35em;
     font-weight: 700;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     color: var(--text);
+  }
+
+  /* Subtle separators between major sections */
+  &__section + &__section {
+    border-top: 1px solid var(--border);
+    padding-top: 1.5rem;
   }
 
   &__section-body {
@@ -230,4 +236,16 @@
     margin: 0;
     line-height: 1.6;
   }
+}
+
+/* Print-friendly adjustments for the resume page */
+@media print {
+  .resume { font-size: 1.4rem; }
+  .resume__sidebar {
+    background: transparent !important;
+    border-color: #dddddd !important;
+    position: static !important;
+  }
+  .resume__photo img { border-color: #dddddd !important; }
+  a { color: inherit !important; text-decoration: none !important; }
 }

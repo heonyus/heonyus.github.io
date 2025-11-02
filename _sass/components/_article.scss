@@ -54,7 +54,7 @@
     margin-bottom: 5rem; // 50px
     @include fs--body;
     color: var(--text);
-    line-height: 1.5; // 기본 행간 조정
+    line-height: 1.8; // 기본 행간 약간 축소
 
     > * {
         margin-bottom: 2.4rem; // 섹션 간 여백 소폭 축소
@@ -116,13 +116,13 @@
     }
     
     p {
-        line-height: 1.5; // 문단 행간 조정
+        line-height: 1.9; // 문단 행간 소폭 축소
         margin-bottom: 1.4rem; // 문단 간격 축소
     }
     
     li {
-        line-height: 2.0;
-        margin-bottom: 1rem;
+        line-height: 1.5;
+        margin-bottom: 1.2rem;
     }
     
     ul, ol {

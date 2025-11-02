@@ -1,6 +1,8 @@
 /* ==========================================================================
    Reset
    ========================================================================== */
+@use 'helpers/mixins' as *;
+@use 'helpers/variables' as *;
 
 /* Reset Modified from Normalize.css */
 
@@ -199,4 +201,3 @@ code, pre {
 small {
         color: gray;
 }
-

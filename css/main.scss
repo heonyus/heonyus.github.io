@@ -3,33 +3,29 @@
 ---
 @charset "utf-8";
 
-// Helpers
-@import
-    'helpers/mixins',
-    'helpers/variables';
+// Use the modern Sass module system
+// Helpers (expose mixins/vars into global for legacy selectors)
+@use 'helpers/mixins' as *;
+@use 'helpers/variables' as *;
 
 // Base
-@import
-    'base/reset';
+@use 'base/reset';
 
 // Utilities
-@import
-    'utilities/layout',
-    'utilities/separator';
+@use 'utilities/layout';
+@use 'utilities/separator';
 
 // Components
-@import
-    'components/page',
-    'components/resume',
-    'components/article',
-    'components/tag',
-    'components/archives',
-    'components/toc',
-    'components/sidebar',
-    'components/categories';
+@use 'components/page';
+@use 'components/resume';
+@use 'components/article';
+@use 'components/tag';
+@use 'components/archives';
+@use 'components/toc';
+@use 'components/sidebar';
+@use 'components/categories';
 
 // Vendor
-@import
-    'vendor/highlight',
-    'vendor/highlight-dark';
+@use 'vendor/highlight';
+@use 'vendor/highlight-dark';
 

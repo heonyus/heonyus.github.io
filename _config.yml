@@ -32,6 +32,8 @@ kramdown:
   hard_wrap: true
   parse_block_html: true
   parse_span_html: true
+  entity_output: as_char
+  auto_ids: true
   math_engine: mathjax
   math_engine_opts:
     preview: true

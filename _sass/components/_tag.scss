@@ -14,8 +14,10 @@
 }
 
 .c-tag-list--post {
-  margin: 0.8rem 0 0 0;
+  /* ensure tags sit on their own line with a clear gap below */
+  margin: 0.8rem 0 5.0rem 0;
   gap: 0.8rem;
+  width: 100%;
 }
 
 .c-tag {

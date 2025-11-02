@@ -128,7 +128,17 @@
     
     li {
         line-height: 1.5;
-        margin-bottom: 1.2rem;
+        /* tighten gap between bullet items */
+        margin-bottom: 0.6rem;
+    }
+    
+    // 중첩된 리스트의 간격 축소
+    /* nested list spacing (e.g., bullets under numbered lists) */
+    ul ul li,
+    ol ol li,
+    ol ul li,
+    ul ol li {
+        margin-bottom: 0.4rem;
     }
     
     ul, ol {
@@ -218,11 +228,22 @@
             display: list-item !important;
         }
         
+        // 중첩된 리스트의 들여쓰기 간격 일관되게 설정
         ul {
             list-style: circle outside !important;
+            margin-left: 0 !important;
+            padding-left: 2rem !important;
             
             ul {
                 list-style: square outside !important;
+                margin-left: 0 !important;
+                padding-left: 2rem !important;
+                
+                ul {
+                    list-style: square outside !important;
+                    margin-left: 0 !important;
+                    padding-left: 2rem !important;
+                }
             }
         }
     }
@@ -234,15 +255,31 @@
         li {
             list-style: inherit !important;
             display: list-item !important;
-            counter-increment: item;
         }
         
+        // 중첩된 리스트의 들여쓰기 간격 일관되게 설정
         ol {
             list-style: lower-alpha outside !important;
+            margin-left: 0 !important;
+            padding-left: 2rem !important;
             
             ol {
                 list-style: lower-roman outside !important;
+                margin-left: 0 !important;
+                padding-left: 2rem !important;
             }
+        }
+    }
+    
+    // ul과 ol이 섞여있는 경우도 동일한 간격 적용
+    ul ol,
+    ol ul {
+        margin-left: 0 !important;
+        padding-left: 2rem !important;
+        
+        ul, ol {
+            margin-left: 0 !important;
+            padding-left: 2rem !important;
         }
     }
 

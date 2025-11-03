@@ -301,8 +301,8 @@
     }
     
     thead {
-        background: var(--link);
-        color: white;
+        background: var(--table-header-bg, var(--link));
+        color: var(--table-header-text, #ffffff);
         text-align: left;
         font-weight: 600;
     }

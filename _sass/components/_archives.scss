@@ -84,12 +84,12 @@
 }
 
 .c-archives__item {
-    padding: 2.5rem 0;
+    padding: 1.6rem 0;
     border-top: 1px solid #EFF1F3;
     color: var(--text);
     display: grid;
     grid-template-columns: minmax(140px, 160px) minmax(0, 1fr);
-    gap: 2.4rem;
+    gap: 1.6rem;
     align-items: center;
     transition: background-color 0.2s ease;
 
@@ -106,7 +106,7 @@
 .c-archives__details {
     display: flex;
     flex-direction: column;
-    gap: 0.8rem;
+    gap: 0.6rem;
 }
 
 .c-archives__excerpt {

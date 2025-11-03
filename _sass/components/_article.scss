@@ -301,8 +301,8 @@
     }
     
     thead {
-        background: var(--table-header-bg, var(--link));
-        color: var(--table-header-text, #ffffff);
+        background: var(--table-header-bg, var(--link)) !important;
+        color: var(--table-header-text, #ffffff) !important;
         text-align: left;
         font-weight: 600;
     }
@@ -311,6 +311,8 @@
         padding: 1.5rem 1.2rem;
         border: none;
         font-weight: 600;
+        color: var(--table-header-text, #ffffff) !important;
+        background: var(--table-header-bg, var(--link)) !important;
         
         @media screen and (max-width: 768px) {
             padding: 1rem 0.8rem;
@@ -322,6 +324,8 @@
         border-bottom: 1px solid var(--border);
         vertical-align: top;
         line-height: 1.8;
+        color: var(--text) !important;
+        background: transparent !important;
         
         @media screen and (max-width: 768px) {
             padding: 1rem 0.8rem;
@@ -329,19 +333,19 @@
     }
     
     tbody tr {
-        background: var(--bg);
+        background: var(--bg) !important;
         transition: background-color 0.2s ease;
         
         &:hover {
-            background: var(--code-bg);
+            background: var(--code-bg) !important;
         }
         
         &:nth-child(even) {
-            background: var(--table-stripe);
+            background: var(--table-stripe) !important;
         }
         
         &:nth-child(even):hover {
-            background: var(--code-bg);
+            background: var(--code-bg) !important;
         }
         
         &:last-child td {

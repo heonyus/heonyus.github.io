@@ -30,8 +30,8 @@ permalink: /:year/:month/:title.html
 kramdown:
   input: GFM
   hard_wrap: false
-  parse_block_html: true
-  parse_span_html: true
+  parse_block_html: false
+  parse_span_html: false
   entity_output: as_char
   auto_ids: true
   math_engine: mathjax

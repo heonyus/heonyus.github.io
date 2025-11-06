@@ -29,7 +29,7 @@ permalink: /:year/:month/:title.html
 
 kramdown:
   input: GFM
-  hard_wrap: false
+  hard_wrap: true
   parse_block_html: false
   parse_span_html: false
   entity_output: as_char

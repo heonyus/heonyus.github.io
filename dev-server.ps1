@@ -1,5 +1,4 @@
-#!/usr/bin/env pwsh
-# Jekyll Development Server with LiveReload
+﻿# Jekyll Development Server with LiveReload
 # 파일 수정 시 자동으로 브라우저가 새로고침됩니다.
 
 Write-Host "Jekyll 개발 서버를 시작합니다..." -ForegroundColor Green
@@ -9,5 +8,5 @@ Write-Host "중지하려면 Ctrl+C를 누르세요." -ForegroundColor Yellow
 Write-Host ""
 
 $env:JEKYLL_ENV = "development"
-bundle exec jekyll serve --livereload --incremental --open-url
-
+$jekyllBinstub = Join-Path $PSScriptRoot "bin/jekyll"
+& ruby $jekyllBinstub serve --livereload --incremental --open-url

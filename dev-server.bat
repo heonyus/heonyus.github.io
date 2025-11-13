@@ -9,5 +9,7 @@ echo 중지하려면 Ctrl+C를 누르세요.
 echo.
 
 set JEKYLL_ENV=development
-bundle exec jekyll serve --livereload --incremental --open-url
+set SCRIPT_DIR=%~dp0
+set JEKYLL_BIN=%SCRIPT_DIR%bin\jekyll
+ruby "%JEKYLL_BIN%" serve --livereload --incremental --open-url
 

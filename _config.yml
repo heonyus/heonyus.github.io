@@ -27,6 +27,9 @@ include: [_pages]
 markdown: kramdown
 permalink: /:year/:month/:title.html
 
+plugins:
+  - jekyll-paginate-v2
+
 kramdown:
   input: GFM
   hard_wrap: true
@@ -52,6 +55,18 @@ kramdown:
 sass:
     sass_dir: _sass
     style: compressed
+
+# Pagination settings
+pagination:
+  enabled: true
+  per_page: 5
+  permalink: '/blog/page/:num/'
+  title: ':title - page :num'
+  limit: 0
+  sort_field: 'date'
+  sort_reverse: true
+
+paginate_path: '/blog/page/:num/'
 
 # Development settings
 livereload: true

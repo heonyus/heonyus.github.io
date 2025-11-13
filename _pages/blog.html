@@ -3,13 +3,16 @@ layout: page
 title: Blog
 permalink: /blog/
 description: "연구와 개발 메모를 아카이브하는 공간"
+pagination:
+  enabled: true
+  per_page: 5
 ---
 
 <section class="c-archives">
 
-  {% if site.posts and site.posts != empty %}
+  {% if paginator.posts and paginator.posts != empty %}
   <div class="c-archives__list">
-    {% for post in site.posts %}
+    {% for post in paginator.posts %}
     <article class="c-archives__item">
       <time class="c-archives__date" datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %-d, %Y" }}</time>
       <div class="c-archives__details">
@@ -33,6 +36,44 @@ description: "연구와 개발 메모를 아카이브하는 공간"
     </article>
     {% endfor %}
   </div>
+  {% if paginator.total_pages > 1 %}
+  <nav class="pagination">
+    <ul class="pagination__list">
+      {% if paginator.previous_page %}
+      <li class="pagination__item">
+        <a class="pagination__link pagination__link--prev" href="{{ paginator.previous_page_path | relative_url }}">
+          ← 이전
+        </a>
+      </li>
+      {% endif %}
+
+      {% for page in (1..paginator.total_pages) %}
+        {% if page == paginator.page %}
+          <li class="pagination__item">
+            <span class="pagination__link pagination__link--current">{{ page }}</span>
+          </li>
+        {% elsif page == 1 %}
+          <li class="pagination__item">
+            <a class="pagination__link" href="{{ '/blog/' | relative_url }}">{{ page }}</a>
+          </li>
+        {% else %}
+          <li class="pagination__item">
+            <a class="pagination__link" href="{{ site.paginate_path | relative_url | replace: ':num', page }}">{{ page }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if paginator.next_page %}
+      <li class="pagination__item">
+        <a class="pagination__link pagination__link--next" href="{{ paginator.next_page_path | relative_url }}">
+          다음 →
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
   {% else %}
   <p class="c-archives__empty">작성된 글이 없습니다. 곧 새로운 글이 올라올 예정입니다.</p>
   {% endif %}

@@ -1,22 +1,39 @@
 My personal [blog](https://heonyus.github.io/)
 
-- windows에서 실행하려면:
-```
-ruby .\bin\jekyll serve --livereload --trace
+## 🚀 개발 서버 실행 (자동 새로고침)
+
+파일을 수정하면 브라우저가 자동으로 새로고침됩니다!
+
+### Windows
+```powershell
+# PowerShell
+.\dev-server.ps1
+
+# 또는 커맨드 프롬프트
+dev-server.bat
+
+# 또는 직접 실행
+bundle exec jekyll serve --livereload --incremental
 ```
 
-- macOS에서 실행하려면:
-```
- # 1) 번들러를 사용자 홈에 설치
-gem install --user-install bundler:2.4.22
+### macOS/Linux
+```bash
+# 1) 번들러 설치 (최초 1회만)
+gem install --user-install bundler
 
-# 2) 현재 프로젝트에서 vendor/bundle로 설치 경로 고정
-cd /Users/jay/Desktop/Code/heonyus.github.io
+# 2) 프로젝트 의존성 설치 (최초 1회만)
 bundle config set --local path 'vendor/bundle'
-
-# 3) 의존성 설치 (이제 /Library 아래가 아니라 프로젝트 안에 설치됨)
 bundle install
 
-# 4) 서버 실행
-bundle exec jekyll serve --livereload --trace
+# 3) 개발 서버 실행
+bundle exec jekyll serve --livereload --incremental
 ```
+
+서버가 실행되면 `http://localhost:4000` 으로 접속하세요.
+
+## 📝 설정
+
+블로그 엔진에 자동 새로고침 기능이 내장되어 있습니다:
+- `_config.yml`: livereload 설정 포함
+- `_layouts/default.html`: 개발 환경에서 자동으로 livereload 스크립트 주입
+- 프로덕션 빌드 시에는 livereload 코드가 포함되지 않습니다

@@ -53,6 +53,10 @@ sass:
     sass_dir: _sass
     style: compressed
 
+# Development settings
+livereload: true
+livereload_port: 35729
+
 exclude: 
   - vendor/bundle/
   - vendor/cache/

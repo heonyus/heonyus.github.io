@@ -18,8 +18,15 @@ bundle exec jekyll serve --livereload --incremental
 
 ### macOS/Linux
 ```bash
+# 0) Ruby 버전 관리자 설치 (최초 1회만, Ruby 2.6 이하인 경우)
+# rbenv가 없으면 설치:
+brew install rbenv ruby-build
+eval "$(rbenv init - zsh)"
+rbenv install 3.3.7
+rbenv global 3.3.7
+
 # 1) 번들러 설치 (최초 1회만)
-gem install --user-install bundler
+gem install bundler
 
 # 2) 프로젝트 의존성 설치 (최초 1회만)
 bundle config set --local path 'vendor/bundle'

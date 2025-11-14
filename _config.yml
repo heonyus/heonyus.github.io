@@ -66,8 +66,6 @@ pagination:
   sort_field: 'date'
   sort_reverse: true
 
-paginate_path: '/blog/page/:num/'
-
 # Development settings
 livereload: true
 livereload_port: 35729

@@ -232,7 +232,7 @@
             
             // 수식이 포함된 리스트 아이템의 여백 조정
             &:has(.MathJax) {
-                overflow-x: auto;
+                overflow-x: visible;
                 word-wrap: break-word;
             }
         }
